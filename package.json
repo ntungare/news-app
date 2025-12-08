@@ -9,6 +9,10 @@
         "react",
         "ssr"
     ],
+    "author": "Ninad Tungare",
+    "email": "ninad.tungare@gmail.com",
+    "license": "MIT",
+    "packageManager": "pnpm@10.24.0",
     "scripts": {
         "check": "tsc --noEmit --extendedDiagnostics",
         "clean": "rm -rf dist",
@@ -27,9 +31,6 @@
         "lint": "oxlint .",
         "format": "oxfmt"
     },
-    "author": "",
-    "license": "ISC",
-    "packageManager": "pnpm@10.24.0",
     "dependencies": {
         "@tanstack/react-query": "^5.90.12",
         "@tanstack/react-query-devtools": "^5.91.1",

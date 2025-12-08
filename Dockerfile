@@ -1,0 +1,43 @@
+# Stage 1: Install pnpm
+FROM node:24-alpine AS base
+WORKDIR /app
+# Install pnpm
+RUN corepack enable pnpm
+RUN corepack install -g pnpm@10
+RUN export PNPM_STORE=$(pnpm store path)
+
+###
+
+# Stage 2-a: Install Production Dependencies
+FROM base AS production-dependencies
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --prod --frozen-lockfile
+
+# Stage 2-b: Install All Dependencies
+FROM base AS dependencies
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
+
+###
+
+# Stage 3: Build App
+FROM base AS build
+COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
+RUN pnpm run build
+
+###
+
+# Stage 4: Runner
+FROM base AS runner
+ENV NODE_ENV=production
+
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+
+COPY --from=production-dependencies /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json ./package.json
+
+CMD ["pnpm", "start"]

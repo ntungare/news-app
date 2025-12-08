@@ -26,7 +26,7 @@ const server = net.createServer(async (socket) => {
     }
 });
 
-const port = 8181;
+const port = Number.parseInt(process.env.PORT, 10) || 8080;
 
 server.listen(port, '0.0.0.0').on('listening', () => {
     console.log(`Server listening on 0.0.0.0:${port}`);
