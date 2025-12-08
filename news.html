@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News UI</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <!-- NAVBAR -->
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">DailyNews</h1>
+            <ul class="flex space-x-6 font-medium">
+                <li><a href="#" class="hover:text-blue-600">Home</a></li>
+                <li><a href="#" class="hover:text-blue-600">World</a></li>
+                <li><a href="#" class="hover:text-blue-600">Politics</a></li>
+                <li><a href="#" class="hover:text-blue-600">Tech</a></li>
+                <li><a href="#" class="hover:text-blue-600">Sports</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CATEGORY TABS -->
+    <div class="bg-white shadow-sm mt-2">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex space-x-4 overflow-x-auto">
+            <button class="px-4 py-2 bg-blue-600 text-white rounded-full">Latest</button>
+            <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300">Trending</button>
+            <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300">Top Rated</button>
+            <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300">Local</button>
+            <button class="px-4 py-2 bg-gray-200 rounded-full hover:bg-gray-300">Business</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="max-w-7xl mx-auto px-6 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- LEFT COLUMN: MAIN HEADLINE + ARTICLES -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- MAIN HEADLINE -->
+            <div id="main-headline" class="bg-white rounded-lg shadow overflow-hidden">
+                <!-- Content will be injected by script -->
+            </div>
+
+            <!-- ARTICLE GRID -->
+            <div id="article-grid" class="grid md:grid-cols-2 gap-6">
+                <!-- Content will be injected by script -->
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: TRENDING SIDEBAR -->
+        <aside class="space-y-4">
+            <h2 class="text-xl font-bold">Trending</h2>
+            <div id="trending-sidebar" class="bg-white shadow rounded-lg p-4 space-y-4">
+                <!-- Content will be injected by script -->
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-12 bg-white py-6 shadow-inner">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
+            © 2025 DailyNews • All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // 1. ADD DUMMY DATA
+        window.dummyData = {
+            "mainArticle": {
+                "title": "Global Summit Reaches Historic Agreement on Climate Action",
+                "description": "World leaders have unanimously agreed to ambitious new targets for carbon reduction, marking a turning point in the fight against climate change. The agreement comes after weeks of intense negotiations, promising a greener future for generations to come.",
+                "image": "https://images.unsplash.com/photo-1621274790572-7c32596bc67f?auto=format&fit=crop&q=80&w=2000",
+                "category": "World"
+            },
+            "articles": [
+                {
+                    "title": "Tech Giant Unveils Revolutionary AI Assistant",
+                    "description": "The new AI model promises to transform how we interact with our devices, offering real-time translation and advanced problem-solving capabilities.",
+                    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800",
+                    "category": "Tech"
+                },
+                {
+                    "title": "Championship Finals: Underdog Team Takes the Trophy",
+                    "description": "In a stunning upset, the city's beloved underdog team defeated the defending champions in a match that will be remembered for decades.",
+                    "image": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&q=80&w=800",
+                    "category": "Sports"
+                },
+                {
+                    "title": "New Space Telescope Sends Back Breath-taking Images",
+                    "description": "NASA's latest observatory has captured the most detailed images of distant galaxies ever seen, shedding light on the early universe.",
+                    "image": "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=800",
+                    "category": "Science"
+                },
+                {
+                    "title": "Global Markets Rally Amid Positive Economic Data",
+                    "description": "Stock markets around the world saw significant gains today as new reports indicate a faster-than-expected economic recovery.",
+                    "image": "https://images.unsplash.com/photo-1611974765270-ca1258822947?auto=format&fit=crop&q=80&w=800",
+                    "category": "Business"
+                }
+            ],
+            "trending": [
+                {
+                    "badge": "🔥 Breaking",
+                    "title": "Volcano Eruption Forces Evacuation",
+                    "description": "Thousands flee as dormant volcano wakes up."
+                },
+                {
+                    "badge": "📌 Politics",
+                    "title": "Senate Passes New Infrastructure Bill",
+                    "description": "Major funding approved for nationwide projects."
+                },
+                {
+                    "badge": "⚡ Viral",
+                    "title": "Mystery Monolith Appears in Desert",
+                    "description": "Locals baffled by strange metallic structure."
+                }
+            ]
+        };
+
+        // 2. RENDER FUNCTION
+        function renderPage() {
+            // Render Main Headline
+            const mainContainer = document.getElementById('main-headline');
+            const main = window.dummyData.mainArticle;
+            mainContainer.innerHTML = `
+                <img src="${main.image}" class="w-full h-96 object-cover" />
+                <div class="p-6">
+                    <div class="text-blue-600 font-bold text-sm mb-2 uppercase tracking-wide">${main.category}</div>
+                    <h2 class="text-3xl font-bold mb-3 hover:text-blue-800 cursor-pointer">${main.title}</h2>
+                    <p class="text-gray-700 leading-relaxed">${main.description}</p>
+                </div>
+            `;
+
+            // Render Articles Grid
+            const gridContainer = document.getElementById('article-grid');
+            gridContainer.innerHTML = window.dummyData.articles.map(article => `
+                <div class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                    <img src="${article.image}" class="w-full h-48 object-cover" />
+                    <div class="p-4">
+                        <div class="text-blue-600 font-bold text-xs mb-1 uppercase">${article.category}</div>
+                        <h3 class="text-xl font-bold mb-2 hover:text-blue-600 cursor-pointer">${article.title}</h3>
+                        <p class="text-gray-600 text-sm line-clamp-3">${article.description}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Trending Sidebar
+            const trendingContainer = document.getElementById('trending-sidebar');
+            trendingContainer.innerHTML = window.dummyData.trending.map(item => `
+                <div class="border-b last:border-0 border-gray-100 pb-3 last:pb-0">
+                    <h3 class="font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
+                        <span class="mr-2">${item.badge}</span>${item.title}
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">${item.description}</p>
+                </div>
+            `).join('');
+        }
+
+        // 3. INIT
+        renderPage();
+    </script>
+</body>
+
+</html>
