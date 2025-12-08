@@ -1,7 +1,6 @@
 import net from 'net';
 import http1 from 'http';
 import http2 from 'http2';
-
 import { makeApp } from './server';
 
 const app = makeApp();

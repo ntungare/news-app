@@ -1,10 +1,7 @@
 import path from 'path';
 import fs from 'fs';
-
 import htmlescape from 'htmlescape';
-
 import { RenderFile, RenderState } from '../../pages/render';
-
 import type { QueryClient } from '@tanstack/react-query';
 
 export const getClientAssetPath = (): string => {

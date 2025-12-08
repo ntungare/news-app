@@ -1,7 +1,6 @@
 import React, { FC, PropsWithChildren } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
 import { NavBar, NavBarProps } from '../components/NavBar';
 import { CategoryTags, CategoryTagsProps } from '../components/CategoryTags';
 import { Footer } from '../components/Footer';

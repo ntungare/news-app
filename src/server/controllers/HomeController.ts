@@ -1,7 +1,5 @@
 import path from 'path';
-
 import { getHtml, renderFile } from '../utils/render';
-
 import type { RequestHandler } from 'express';
 import type { AppLocals } from '../../server/server';
 import type { HomeRenderState } from '../../pages/home/Home.client';

@@ -1,10 +1,8 @@
 # Stage 1: Install pnpm
-FROM node:24-alpine AS base
+FROM docker.io/library/node:24-alpine AS base
 WORKDIR /app
-# Install pnpm
-RUN corepack enable pnpm
 RUN corepack install -g pnpm@10
-RUN export PNPM_STORE=$(pnpm store path)
+RUN corepack enable pnpm
 
 ###
 

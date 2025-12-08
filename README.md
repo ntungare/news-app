@@ -42,7 +42,11 @@ This command concurrently runs:
 - Vite build watcher for the client bundle
 - Vite build watcher for the server bundle
 
-### Building for Production
+The application will be accessible at `http://localhost:8080`.
+
+### Production
+
+#### Building for Production
 
 To build the application for production:
 
@@ -56,7 +60,7 @@ This will run:
 
 Artifacts are output to the `dist` directory.
 
-### Running in Production
+#### Running in Production
 
 After building, you can start the production server:
 
@@ -64,19 +68,45 @@ After building, you can start the production server:
 pnpm start
 ```
 
+The application will be accessible at `http://localhost:8080`.
+
+### Docker
+
+You can containerize the application using the included `Dockerfile`.
+
+#### Build the Image
+
+```bash
+docker build -t news-app .
+```
+
+#### Run the Container
+
+The default port exposed is `8080`.
+
+```bash
+docker run -p 8080:8080 news-app
+```
+
+The application will be accessible at `http://localhost:8080`.
+
+### Notes
+
+The port for development, production, and Docker can be overridden via the `PORT` environment variable and the `PORT` build argument, respectively.
+
+
 ## Project Structure
 
 - `src/server`: Contains the Express server setup and SSR logic.
 - `src/pages`: React application pages and components.
 - `vite.client.config.ts`: Vite configuration for the client-side bundle.
 - `vite.server.config.ts`: Vite configuration for the server-side bundle.
-- `news.html`: HTML template.
 
 ## Scripts
 
-- `pnpm start:dev`: Start development server.
+- `pnpm clean`: Remove the `dist` directory.
 - `pnpm build`: Build for production.
 - `pnpm start`: Start production server.
+- `pnpm start:dev`: Start development server.
 - `pnpm lint`: Run `oxlint`.
 - `pnpm format`: Run `oxfmt`.
-- `pnpm clean`: Remove the `dist` directory.
