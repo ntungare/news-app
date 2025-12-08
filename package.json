@@ -25,7 +25,7 @@
         "start:dev:bundle:server": "pnpm run build:bundle:server --minify=false --watch --mode=development",
         "wait-on": "node ./wait-on.mjs",
         "lint": "oxlint .",
-        "fmt": "oxfmt"
+        "format": "oxfmt"
     },
     "author": "",
     "license": "ISC",
