@@ -6,17 +6,19 @@ import { TrendingSidebar, TrendingSidebarProps } from '../../components/Trending
 export interface HomeProps {
     mainArticle: MainHeadlineProps;
     articles: ArticleGridProps['articles'];
-    trending: TrendingSidebarProps['items'];
+    trending: TrendingSidebarProps['articles'];
 }
 
 export const Home: FC<HomeProps> = ({ mainArticle, articles, trending }) => {
     return (
-        <div className="max-w-7xl mx-auto px-6 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto px-6 mt-8 grid gap-8 lg:grid-cols-3 [grid-template-areas:'sidebar'_'main'] lg:[grid-template-areas:'main_main_sidebar']">
             {/* RIGHT COLUMN: TRENDING SIDEBAR */}
-            <TrendingSidebar items={trending} />
+            <div className="[grid-area:sidebar]">
+                <TrendingSidebar articles={trending} />
+            </div>
 
             {/* LEFT COLUMN: MAIN HEADLINE + ARTICLES */}
-            <div className="lg:col-span-2 space-y-8 lg:order-first">
+            <div className="space-y-8 [grid-area:main]">
                 {/* MAIN HEADLINE */}
                 <MainHeadline {...mainArticle} />
 
