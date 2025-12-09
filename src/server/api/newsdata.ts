@@ -88,7 +88,7 @@ export class NewsDataService {
 
     private addLoggingInterceptor(instance: AxiosInstance) {
         instance.interceptors.request.use((config) => {
-            console.log(`Axios Request URL: ${config.url}`);
+            console.log(`Axios Request URL: ${config.baseURL}${config.url}`);
 
             return config;
         });
