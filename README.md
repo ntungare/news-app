@@ -9,15 +9,30 @@ A Server-Side Rendered (SSR) React application designed to display news content,
 - **Build Tool**: Vite (Dual config for client and server bundles).
 - **Language**: TypeScript.
 - **Linting & Formatting**: Oxlint and Oxfmt.
+- **API Integration**: Real-time news fetching via [newsdata.io](https://newsdata.io/).
 
 ## Todo
 
-- [ ] **News API Integration**: The implementation for fetching news from an external API is currently pending.
+- [x] **News API Integration**: The implementation for fetching news from an external API is currently pending.
+- [ ] **Main Article Fetch**: Logic for fetching and displaying the main headline article is pending.
+
+## Styling
+
+The application's styling is built using [**Tailwind CSS**](https://tailwindcss.com/), providing a utility-first approach for rapid UI development.
+
+-   **CSS Grid**: Utilized extensively for layout management, ensuring responsive and robust designs across mobile, tablet, and desktop views.
+-   **Responsive Design**: Tailwind's breakpoint system is used to adapt layouts for different screen sizes.
 
 ## Prerequisites
 
 - Node.js
 - [pnpm](https://pnpm.io/) (Package Manager) - This project uses Corepack or requires `pnpm` to be installed. The project specifies `packageManager: pnpm@10.24.0`.
+
+## Configuration
+
+This project requires the following environment variables to be set in a `.env` file in the root directory:
+
+- `NEWSDATA_IO_API_KEY`: API key for [newsdata.io](https://newsdata.io/).
 
 ## Getting Started
 
@@ -98,6 +113,7 @@ The port for development, production, and Docker can be overridden via the `PORT
 ## Project Structure
 
 - `src/server`: Contains the Express server setup and SSR logic.
+- `src/server/api`: API integrations and services.
 - `src/pages`: React application pages and components.
 - `vite.client.config.ts`: Vite configuration for the client-side bundle.
 - `vite.server.config.ts`: Vite configuration for the server-side bundle.
