@@ -1,5 +1,6 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, getAdapter } from 'axios';
 import qs from 'qs';
+import { makeCacheAdapter } from '../service/cacheAdapter';
 import type { Category } from '../../constants/categories';
 import type { Country } from '../../constants/countries';
 
@@ -72,7 +73,12 @@ export class NewsDataService {
 
     constructor(apiKey: string) {
         this.apiKey = apiKey;
-        this.instance = axios.create({
+        this.instance = this.makeAxiosInstance();
+        this.addExtraConfigsToInstance(this.instance);
+    }
+
+    private makeAxiosInstance() {
+        return axios.create({
             baseURL: this.baseUrl,
             params: {
                 apikey: this.apiKey,
@@ -83,10 +89,15 @@ export class NewsDataService {
             },
             timeout: 5000,
         });
-        this.addLoggingInterceptor(this.instance);
     }
 
-    private addLoggingInterceptor(instance: AxiosInstance) {
+    private addExtraConfigsToInstance(instance: AxiosInstance) {
+        // Wrap the adapter with caching functionality
+        instance.defaults.adapter = makeCacheAdapter(
+            getAdapter(instance.defaults.adapter)
+        );
+
+        // Add a request interceptor for logging
         instance.interceptors.request.use((config) => {
             console.log(`Axios Request URL: ${config.baseURL}${config.url}`);
 
