@@ -10,7 +10,7 @@ export interface NewsDataLatestParams {
     qInTitle?: string;
     qInMeta?: string;
     country: Country;
-    category?: Category[];
+    category?: Category | Category[];
     language: 'en';
     domain?: string | string[];
     sort: 'pubdateasc' | 'relevancy' | 'source';
@@ -66,14 +66,21 @@ export interface NewsDataLatestResponse {
     nextPage: string | null;
 }
 
+export interface GetLatestResponse {
+    previousParams?: UserInputParams;
+    apiResponse: NewsDataLatestResponse;
+}
+
 export class NewsDataService {
     private apiKey: string;
     private baseUrl = 'https://newsdata.io/api/1';
     private instance: AxiosInstance;
+    private pageMap: Map<string, UserInputParams>;
 
     constructor(apiKey: string) {
         this.apiKey = apiKey;
         this.instance = this.makeAxiosInstance();
+        this.pageMap = new Map<string, UserInputParams>();
         this.addExtraConfigsToInstance(this.instance);
     }
 
@@ -103,23 +110,52 @@ export class NewsDataService {
         });
     }
 
-    /**
-     * Fetch latest news from newsdata.io
-     * @param params - Freeform parameters for the API call
-     */
-    async getLatest(params: Partial<UserInputParams> = defaultParams) {
-        // Merge api key with the provided freeform params
-        const requestParams: UserInputParams = {
+    private setCurrentPageParamsToNextPage(
+        currentParams: UserInputParams,
+        nextPage?: string | null
+    ): void {
+        if (!nextPage) {
+            return;
+        }
+        this.pageMap.set(nextPage, currentParams);
+    }
+
+    public getPreviousPageParamsFromPage(page: string | undefined): UserInputParams | undefined {
+        if (!page) {
+            return;
+        }
+        return this.pageMap.get(page);
+    }
+
+    private generateUserInputParams(
+        params: Partial<UserInputParams> = defaultParams
+    ): UserInputParams {
+        return {
             ...defaultParams,
             prioritydomain: 'top',
             ...params,
         };
+    }
+
+    /**
+     * Fetch latest news from newsdata.io
+     * @param params - Freeform parameters for the API call
+     */
+    async getLatest(params?: Partial<UserInputParams>): Promise<GetLatestResponse> {
+        // Merge api key with the provided freeform params
+        const requestParams = this.generateUserInputParams(params);
 
         try {
             const response = await this.instance.get<NewsDataLatestResponse>('/latest', {
                 params: requestParams,
             });
-            return response.data;
+            this.setCurrentPageParamsToNextPage(requestParams, response.data.nextPage);
+            const previousPageParams = this.getPreviousPageParamsFromPage(requestParams.page);
+
+            return {
+                previousParams: previousPageParams,
+                apiResponse: response.data,
+            };
         } catch (error) {
             console.error('Error fetching news:', error.message);
             throw error;

@@ -1,10 +1,12 @@
 import path from 'path';
 import { getHtml, renderFile } from '../utils/render';
 import { Category, TagData, categoryMapping } from '../../constants/categories';
-import { Country, countries } from '../../constants/countries';
+import { Country, countriesSet } from '../../constants/countries';
+import { formatUrl } from '../../utils/urlFormatter';
 import type { RequestHandler } from 'express';
 import type { AppLocals } from '../../server/server';
 import type { HomeRenderState } from '../../pages/home/Home.client';
+import type { UserInputParams } from '../api/newsdata';
 
 export type Handler = RequestHandler<
     unknown,
@@ -13,6 +15,7 @@ export type Handler = RequestHandler<
     {
         tag?: Category | string;
         country?: Country | string;
+        page?: string;
     },
     AppLocals
 >;
@@ -66,17 +69,44 @@ export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
     ];
 };
 
+export const inputIsCountry = (country: Country | string): country is Country => {
+    return countriesSet.has(country);
+};
+
 export const inputIsCategory = (category: Category | string): category is Category => {
     return Object.prototype.hasOwnProperty.call(categoryMapping, category);
 };
 
-export const inputIsCountry = (country: Country | string): country is Country => {
-    return countries.some((c) => c === country);
+export const firstPageUrl = (
+    currentHref: string,
+    activeCountry: Country,
+    activeTagId: Category
+): string | undefined => {
+    return formatUrl({ path: currentHref, params: { country: activeCountry, tag: activeTagId } });
+};
+
+export const previousPageUrl = (
+    currentHref: string,
+    previousPageParams: UserInputParams | undefined
+): string | undefined => {
+    if (!previousPageParams) {
+        return undefined;
+    }
+
+    const { country, category, page } = previousPageParams;
+    let tag: Category;
+    if (Array.isArray(category)) {
+        tag = category[0];
+    } else {
+        tag = category;
+    }
+
+    return formatUrl({ path: currentHref, params: { country, tag, page } });
 };
 
 export const makeHomeController = (): Handler =>
     async function HomeController(request, response) {
-        if (!inputIsCountry(request.query.country)) {
+        if (!!request.query.country && !inputIsCountry(request.query.country)) {
             response.status(400).send('Invalid country');
             return;
         }
@@ -84,7 +114,7 @@ export const makeHomeController = (): Handler =>
             ? request.query.country
             : 'ie';
 
-        if (!inputIsCategory(request.query.tag)) {
+        if (!!request.query.tag && !inputIsCategory(request.query.tag)) {
             response.status(400).send('Invalid tag');
             return;
         }
@@ -92,13 +122,23 @@ export const makeHomeController = (): Handler =>
             ? request.query.tag
             : 'technology';
 
+        const currentHref = request.path;
+        const pageToFetch = request.query.page;
+        const newsDataService = response.locals.newsDataService;
+
+        if (pageToFetch && !newsDataService.getPreviousPageParamsFromPage(pageToFetch)) {
+            response.redirect(301, firstPageUrl(currentHref, activeCountry, activeTagId));
+            return;
+        }
+
         const latestArticlesPromise = response.locals.newsDataService.getLatest({
             country: activeCountry,
-            category: [activeTagId],
+            category: activeTagId,
+            page: request.query.page,
         });
         const breakingArticlesPromise = response.locals.newsDataService.getLatest({
             country: activeCountry,
-            category: ['breaking'],
+            category: 'breaking',
         });
 
         const [latestArticles, breakingArticles] = await Promise.all([
@@ -107,7 +147,7 @@ export const makeHomeController = (): Handler =>
         ]);
 
         const state: HomeRenderState = {
-            activePath: request.path,
+            activePath: currentHref,
             activeCountry: activeCountry,
             navBarProps: {
                 title: 'DailyNews',
@@ -144,8 +184,14 @@ export const makeHomeController = (): Handler =>
                 tags: getTagsToDisplay(activeTagId),
             },
             data: {
-                articles: latestArticles.results,
-                trending: breakingArticles.results,
+                articleProps: {
+                    articles: latestArticles.apiResponse.results,
+                    previousPageUrl: previousPageUrl(currentHref, latestArticles.previousParams),
+                    nextPage: latestArticles.apiResponse.nextPage,
+                },
+                trendingSidebarProps: {
+                    articles: breakingArticles.apiResponse.results,
+                },
             },
         };
         const { serverAssetPath, queryClient, manifest } = response.locals;

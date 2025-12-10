@@ -1,11 +1,11 @@
 import React, { FC, useState, useMemo, memo } from 'react';
 import classnames from 'classnames';
-import qs from 'qs';
 import { FaBars, FaXmark } from 'react-icons/fa6';
 import US from 'country-flag-icons/react/3x2/US';
 import IE from 'country-flag-icons/react/3x2/IE';
 import IN from 'country-flag-icons/react/3x2/IN';
 import { useUrlState } from '../../hooks/urlState';
+import { formatUrl } from '../../utils/urlFormatter';
 import type { FlagComponent } from 'country-flag-icons/react/3x2';
 import type { Country } from '../../constants/countries';
 
@@ -41,7 +41,7 @@ export const NavBar: FC<NavBarProps> = ({ title, navItems }) => {
                         {navItems.map((navItem, idx) => (
                             <li key={`desktop-${idx}-${navItem.id}`}>
                                 <a
-                                    href={`${navItem.href}?${qs.stringify({ tag, country })}`}
+                                    href={formatUrl({ path, params: { tag, country } })}
                                     className="hover:text-blue-600"
                                 >
                                     {navItem.name}
@@ -83,7 +83,10 @@ export const NavBar: FC<NavBarProps> = ({ title, navItems }) => {
                                     return (
                                         <a
                                             key={countryCode}
-                                            href={`${path}?${qs.stringify({ tag, country: countryCode })}`}
+                                            href={formatUrl({
+                                                path,
+                                                params: { tag, country: countryCode },
+                                            })}
                                             className={classnames(
                                                 'w-full px-4 py-2 flex items-center justify-between gap-3',
                                                 'text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50',

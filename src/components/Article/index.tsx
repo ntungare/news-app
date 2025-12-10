@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import qs from 'qs';
 import type { NewsDataArticle } from '../../server/api/newsdata';
 import { useUrlState } from '../../hooks/urlState';
+import { formatUrl } from '../../utils/urlFormatter';
 
 export const Article: FC<NewsDataArticle> = ({
     image_url,
@@ -45,7 +45,7 @@ export const Article: FC<NewsDataArticle> = ({
                     {category.map((cat, idx) => (
                         <React.Fragment key={`${idx}-${cat}`}>
                             <a
-                                href={`${path}?${qs.stringify({ country, tag: cat })}`}
+                                href={formatUrl({ path, params: { country, tag: cat } })}
                                 className="text-blue-600 font-bold text-xs uppercase hover:underline"
                             >
                                 {cat}

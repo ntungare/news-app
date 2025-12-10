@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import classnames from 'classnames';
-import qs from 'qs';
 import { useUrlState } from '../../hooks/urlState';
+import { formatUrl } from '../../utils/urlFormatter';
 import type { Category, TagData } from '../../constants/categories';
 
 export interface CategoryTagsProps {
@@ -21,7 +21,7 @@ export const CategoryTags: FC<CategoryTagsProps> = ({ activeTagId, tags }) => {
                     return (
                         <a
                             key={`${idx}-${tag.id}`}
-                            href={`${path}?${qs.stringify({ country, tag: tag.id })}`}
+                            href={formatUrl({ path, params: { country, tag: tag.id } })}
                             className={classnames('px-4 py-2 rounded-full snap-start', {
                                 'bg-blue-600 text-white': isActive,
                                 'bg-gray-200 hover:bg-gray-300': !isActive,

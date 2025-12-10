@@ -1,4 +1,4 @@
-export const categoryMapping = {
+export const categoryMapping = Object.freeze({
     breaking: 'Breaking',
     business: 'Business',
     crime: 'Crime',
@@ -17,7 +17,7 @@ export const categoryMapping = {
     top: 'Top',
     tourism: 'Tourism',
     world: 'World',
-} as const;
+} as const);
 
 export type Category = keyof typeof categoryMapping;
 
