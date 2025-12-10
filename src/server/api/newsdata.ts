@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, getAdapter } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import qs from 'qs';
 import { makeCacheAdapter } from '../service/cacheAdapter';
 import type { Category } from '../../constants/categories';
@@ -93,9 +93,7 @@ export class NewsDataService {
 
     private addExtraConfigsToInstance(instance: AxiosInstance) {
         // Wrap the adapter with caching functionality
-        instance.defaults.adapter = makeCacheAdapter(
-            getAdapter(instance.defaults.adapter)
-        );
+        instance.defaults.adapter = makeCacheAdapter(instance.defaults.adapter);
 
         // Add a request interceptor for logging
         instance.interceptors.request.use((config) => {

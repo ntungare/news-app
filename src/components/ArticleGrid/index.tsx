@@ -8,10 +8,13 @@ export interface ArticleGridProps {
 
 export const ArticleGrid: FC<ArticleGridProps> = ({ articles }) => {
     return (
-        <div className="grid md:grid-cols-2 gap-6">
-            {articles.map((article, idx) => (
-                <Article key={`${idx}-${article.article_id}`} {...article} />
-            ))}
+        <div className="space-y-4">
+            <h2 className="text-xl font-bold">Articles</h2>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {articles.map((article, idx) => (
+                    <Article key={`${idx}-${article.article_id}`} {...article} />
+                ))}
+            </div>
         </div>
     );
 };

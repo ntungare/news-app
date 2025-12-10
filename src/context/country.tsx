@@ -21,8 +21,9 @@ export const useCountryContext = () => {
     return countryContext;
 };
 
-export const CountryContextProvider: FC<
-    PropsWithChildren<Omit<CountryContextT, 'setSelectedCountry'>>
-> = ({ activeCountry, children }) => {
+export const CountryContextProvider: FC<PropsWithChildren<CountryContextT>> = ({
+    activeCountry,
+    children,
+}) => {
     return <CountryContext.Provider value={{ activeCountry }}>{children}</CountryContext.Provider>;
 };

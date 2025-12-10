@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import classnames from 'classnames';
 import { NewsDataArticle } from '../../server/api/newsdata';
 import { TrendingArticle } from '../TrendingArticle';
 
@@ -11,17 +12,14 @@ export const TrendingSidebar: FC<TrendingSidebarProps> = ({ articles }) => {
         <aside className="space-y-4">
             <h2 className="text-xl font-bold">Breaking News</h2>
             <div
-                className="bg-white shadow rounded-lg p-4 grid gap-4 overflow-y-auto max-h-[60dvh] lg:max-h-none lg:overflow-visible"
-                style={{
-                    gridTemplateAreas: articles.map((_, i) => `"article-${i}"`).join(' '),
-                }}
+                className={classnames(
+                    'bg-white shadow rounded-lg px-4',
+                    'flex flex-col max-h-100 lg:max-h-none',
+                    'overflow-y-auto lg:overflow-visible snap-y'
+                )}
             >
                 {articles.map((article, idx) => (
-                    <TrendingArticle
-                        key={`${idx}-${article.article_id}`}
-                        {...article}
-                        articleIdx={idx}
-                    />
+                    <TrendingArticle key={`${idx}-${article.article_id}`} {...article} />
                 ))}
             </div>
         </aside>

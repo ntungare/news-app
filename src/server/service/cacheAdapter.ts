@@ -1,11 +1,10 @@
+import { getAdapter } from 'axios';
 import { CacheKeyParams, CacheService } from './cache';
-import type { AxiosAdapter, AxiosResponse } from 'axios';
+import type { AxiosAdapterConfig, AxiosAdapter, AxiosResponse } from 'axios';
 
-export interface CacheAdapterParams {
-    originalAdapter: AxiosAdapter;
-}
+export const makeCacheAdapter = (adapter?: AxiosAdapterConfig | AxiosAdapterConfig[]): AxiosAdapter => {
+    const originalAdapter = getAdapter(adapter);
 
-export const makeCacheAdapter = (originalAdapter: AxiosAdapter): AxiosAdapter => {
     return async function cacheAdapter(config) {
         const cacheService = CacheService.getInstance();
         const cacheKeyParams: CacheKeyParams = {

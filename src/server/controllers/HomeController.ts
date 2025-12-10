@@ -1,6 +1,6 @@
 import path from 'path';
 import { getHtml, renderFile } from '../utils/render';
-import { Category, categoryMapping } from '../../constants/categories';
+import { Category, TagData, categoryMapping } from '../../constants/categories';
 import { Country, countries } from '../../constants/countries';
 import type { RequestHandler } from 'express';
 import type { AppLocals } from '../../server/server';
@@ -17,13 +17,53 @@ export type Handler = RequestHandler<
     AppLocals
 >;
 
-export const getTagsToDisplay = (): Array<{ id: Category; name: string }> => {
-    return Object.entries(categoryMapping)
-        .filter(([key, _value]) => key !== 'breaking')
+const breakingTagId: Category = 'breaking';
+const domesticTagId: Category = 'domestic';
+const worldTagId: Category = 'world';
+const lastTagId: Category = 'other';
+
+const tagsToFilterOut = new Set<Category>([breakingTagId, domesticTagId, worldTagId, lastTagId]);
+
+export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
+    const allTags: Array<TagData> = Object.entries(categoryMapping)
+        .filter(([key, _value]) => !tagsToFilterOut.has(key as Category))
+        .filter(([key, _value]) => key !== activeTagId)
         .map(([key, value]) => ({
             id: key as Category,
             name: value,
-        }));
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+    const firstTags: Array<TagData> = [];
+    if (activeTagId !== domesticTagId) {
+        firstTags.push({
+            id: domesticTagId,
+            name: categoryMapping[domesticTagId],
+        });
+    }
+    if (activeTagId !== worldTagId) {
+        firstTags.push({
+            id: worldTagId,
+            name: categoryMapping[worldTagId],
+        });
+    }
+    const lastTags: Array<TagData> = [];
+    if (activeTagId !== lastTagId) {
+        lastTags.push({
+            id: lastTagId,
+            name: categoryMapping[lastTagId],
+        });
+    }
+
+    return [
+        {
+            id: activeTagId,
+            name: categoryMapping[activeTagId],
+        },
+        ...firstTags,
+        ...allTags,
+        ...lastTags,
+    ];
 };
 
 export const inputIsCategory = (category: Category | string): category is Category => {
@@ -36,10 +76,18 @@ export const inputIsCountry = (country: Country | string): country is Country =>
 
 export const makeHomeController = (): Handler =>
     async function HomeController(request, response) {
+        if (!inputIsCountry(request.query.country)) {
+            response.status(400).send('Invalid country');
+            return;
+        }
         const activeCountry: Country = inputIsCountry(request.query.country)
             ? request.query.country
             : 'ie';
 
+        if (!inputIsCategory(request.query.tag)) {
+            response.status(400).send('Invalid tag');
+            return;
+        }
         const activeTagId: Category = inputIsCategory(request.query.tag)
             ? request.query.tag
             : 'technology';
@@ -59,6 +107,7 @@ export const makeHomeController = (): Handler =>
         ]);
 
         const state: HomeRenderState = {
+            activePath: request.path,
             activeCountry: activeCountry,
             navBarProps: {
                 title: 'DailyNews',
@@ -92,16 +141,9 @@ export const makeHomeController = (): Handler =>
             },
             categoryTagsProps: {
                 activeTagId: activeTagId,
-                tags: getTagsToDisplay(),
+                tags: getTagsToDisplay(activeTagId),
             },
             data: {
-                mainArticle: {
-                    title: 'Global Summit Reaches Historic Agreement on Climate Action',
-                    description:
-                        'World leaders have unanimously agreed to ambitious new targets for carbon reduction, marking a turning point in the fight against climate change. The agreement comes after weeks of intense negotiations, promising a greener future for generations to come.',
-                    image: 'https://images.unsplash.com/photo-1621274790572-7c32596bc67f?auto=format&fit=crop&q=80&w=2000',
-                    category: 'World',
-                },
                 articles: latestArticles.results,
                 trending: breakingArticles.results,
             },

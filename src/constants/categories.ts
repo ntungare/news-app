@@ -20,3 +20,8 @@ export const categoryMapping = {
 } as const;
 
 export type Category = keyof typeof categoryMapping;
+
+export interface TagData {
+    id: Category;
+    name: string;
+}

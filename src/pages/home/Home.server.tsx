@@ -5,16 +5,9 @@ import { Home, HomeProps } from './Home';
 import type { RenderFile } from '../render';
 
 export const render: RenderFile<HomeProps>['render'] = ({ queryClient, state }) => {
-    const { activeCountry, navBarProps, categoryTagsProps, data } = state;
-
     return renderToString(
-        <Layout
-            queryClient={queryClient}
-            activeCountry={activeCountry}
-            navBarProps={navBarProps}
-            categoryTagsProps={categoryTagsProps}
-        >
-            <Home {...data} />
+        <Layout queryClient={queryClient} {...state}>
+            <Home {...state.data} />
         </Layout>
     );
 };
