@@ -1,0 +1,71 @@
+import { LRUCache } from 'lru-cache';
+import { createClient } from 'redis';
+import cloneDeep from 'lodash-es/cloneDeep';
+import objectHash from 'object-hash';
+
+export type RedisClient = ReturnType<typeof createClient>;
+
+export interface CacheKeyParams {
+    baseURL?: string;
+    requestPath: string;
+    requestParams: Record<string, unknown>;
+}
+
+const generateKey = (cacheKeyParams: CacheKeyParams): string => {
+    const requestParams = cloneDeep(cacheKeyParams.requestParams);
+    delete requestParams.apikey;
+
+    const cacheKeyObject = {
+        baseURL: cacheKeyParams.baseURL,
+        requestPath: cacheKeyParams.requestPath,
+        requestParams: requestParams,
+    };
+
+    return objectHash(cacheKeyObject);
+};
+
+// 1 hour
+const ttlMilliseconds = 1000 * 60 * 60;
+
+export class CacheWrapper {
+    private redisCache: RedisClient | undefined;
+    private localCache: LRUCache<string, string> | undefined;
+
+    public constructor(redisCache: RedisClient | undefined) {
+        this.redisCache = redisCache;
+        if (!this.redisCache) {
+            this.localCache = this.makeLocalCache();
+        }
+    }
+
+    private makeLocalCache(): LRUCache<string, string> {
+        return new LRUCache({
+            max: 1000,
+            ttl: ttlMilliseconds,
+            ttlAutopurge: true,
+        });
+    }
+
+    public async get(cacheKey: CacheKeyParams): Promise<string | undefined> {
+        const normalizedCacheKey = generateKey(cacheKey);
+        if (this.redisCache) {
+            const redisData = await this.redisCache.get(normalizedCacheKey);
+
+            return redisData ? redisData.toString() : undefined;
+        }
+
+        return this.localCache!.get(normalizedCacheKey);
+    }
+
+    public set(cacheKey: CacheKeyParams, value: string): void {
+        const normalizedCacheKey = generateKey(cacheKey);
+        if (this.redisCache) {
+            this.redisCache.set(normalizedCacheKey, value, {
+                expiration: { type: 'PX', value: ttlMilliseconds },
+            });
+            return;
+        }
+
+        this.localCache!.set(normalizedCacheKey, value);
+    }
+}

@@ -1,8 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 import htmlescape from 'htmlescape';
-import { RenderFile, RenderState } from '../../pages/render';
+import { Page, pageToClientFileName, pageToRenderFn } from './fileMappings';
 import type { QueryClient } from '@tanstack/react-query';
+import type { RenderState } from '../../pages/render';
 
 export const getClientAssetPath = (): string => {
     return path.resolve('dist', 'assets', 'client');
@@ -55,13 +56,14 @@ export const getHtml = <T>(
         state: RenderState<T>;
     },
     clientAsset: {
-        clientFileName: string;
+        page: Page;
         manifest: Manifest;
     }
 ): string => {
     const { rootHtml, state } = renderedContent;
-    const { clientFileName, manifest } = clientAsset;
+    const { page, manifest } = clientAsset;
 
+    const clientFileName = pageToClientFileName[page];
     const cssFiles = collectCssFiles(clientFileName, manifest);
     const clientFileData = manifest[clientFileName];
 
@@ -89,19 +91,15 @@ export const getHtml = <T>(
 };
 
 export const renderFile = async <T>(
-    fileName: string,
+    page: Page,
     queryClient: QueryClient,
     state: RenderState<T>
 ): Promise<string> => {
-    const file: RenderFile<T> = await import(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        fileName
-    );
+    const renderFn = pageToRenderFn[page];
 
     let rootHtml = '';
     try {
-        rootHtml = file.render({ queryClient, state });
+        rootHtml = renderFn({ queryClient, state });
     } catch (err) {
         console.error('Render failed', err);
     }

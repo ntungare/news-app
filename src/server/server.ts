@@ -3,20 +3,16 @@ import morgan from 'morgan';
 import compression from 'compression';
 import { getClientAssetPath, getManifests, getServerAssetPath } from './utils/render';
 import { QueryClient } from '@tanstack/react-query';
+import { CacheService } from './service/cache';
 import { NewsDataService } from './api/newsdata';
+import { countryMiddlware } from './middleware/country';
+import { navBarMiddlware } from './middleware/navBar';
 import { makeHomeController } from './controllers/HomeController';
 import type { DotenvParseOutput } from 'dotenv';
-import type { Manifest } from './utils/render';
+import { makeErrorController } from './controllers/ErrorController';
 
-export interface AppLocals {
-    manifest: Manifest;
-    clientAssetPath: string;
-    serverAssetPath: string;
-    queryClient: QueryClient;
-    newsDataService: NewsDataService;
-}
-
-export const makeApp = (_env: DotenvParseOutput): Express => {
+export const makeApp = async (_env: DotenvParseOutput): Promise<Express> => {
+    await CacheService.getInstance().init();
     const manifest = getManifests();
     const clientAssetPath = getClientAssetPath();
     const serverAssetPath = getServerAssetPath();
@@ -35,8 +31,12 @@ export const makeApp = (_env: DotenvParseOutput): Express => {
         response.locals.newsDataService = newsDataService;
         next();
     });
+    app.use(countryMiddlware);
+    app.use(navBarMiddlware);
 
     app.get('/', makeHomeController());
+
+    app.use(makeErrorController());
 
     return app;
 };

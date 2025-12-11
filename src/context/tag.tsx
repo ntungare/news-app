@@ -11,15 +11,7 @@ const defaultTagContext: TagContextT = {
 
 export const TagContext = createContext(defaultTagContext);
 
-export const useTagContext = () => {
-    const tagContext = useContext(TagContext);
-
-    if (!tagContext) {
-        throw new Error('useTagContext must be used within a TagContextProvider');
-    }
-
-    return tagContext;
-};
+export const useTagContext = () => useContext(TagContext);
 
 export const TagContextProvider: FC<PropsWithChildren<TagContextT>> = ({
     activeTagId,

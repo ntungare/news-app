@@ -1,8 +1,11 @@
 import { getAdapter } from 'axios';
-import { CacheKeyParams, CacheService } from './cache';
+import { CacheService } from '../index';
+import type { CacheKeyParams } from '../cacheWrapper';
 import type { AxiosAdapterConfig, AxiosAdapter, AxiosResponse } from 'axios';
 
-export const makeCacheAdapter = (adapter?: AxiosAdapterConfig | AxiosAdapterConfig[]): AxiosAdapter => {
+export const makeCacheAdapter = (
+    adapter?: AxiosAdapterConfig | AxiosAdapterConfig[]
+): AxiosAdapter => {
     const originalAdapter = getAdapter(adapter);
 
     return async function cacheAdapter(config) {
@@ -10,9 +13,9 @@ export const makeCacheAdapter = (adapter?: AxiosAdapterConfig | AxiosAdapterConf
         const cacheKeyParams: CacheKeyParams = {
             baseURL: config.baseURL,
             requestPath: config.url,
-            requestParams: config.params
+            requestParams: config.params,
         };
-        const maybeCachedResponse = cacheService.get(cacheKeyParams);
+        const maybeCachedResponse = await cacheService.get(cacheKeyParams);
         if (maybeCachedResponse) {
             return Promise.resolve({
                 data: maybeCachedResponse,

@@ -26,8 +26,24 @@ RUN pnpm run build
 
 ###
 
-# Stage 4: Runner
-FROM base AS runner
+# Stage 4-a: Runner
+FROM base AS development
+ENV NODE_ENV=development
+
+ARG PORT=8080
+ENV PORT=${PORT}
+EXPOSE ${PORT}
+EXPOSE 9220
+
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+CMD ["pnpm", "start:dev"]
+
+###
+
+# Stage 4-b: Runner
+FROM base AS production
 ENV NODE_ENV=production
 
 ARG PORT=8080

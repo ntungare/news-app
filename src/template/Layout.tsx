@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { UrlContextProvider } from '../context/url';
@@ -7,14 +7,13 @@ import { TagContextProvider } from '../context/tag';
 import { NavBar, NavBarProps } from '../components/NavBar';
 import { CategoryTags, CategoryTagsProps } from '../components/CategoryTags';
 import { Footer } from '../components/Footer';
-import './layout.css';
 import type { Country } from '../constants/countries';
 
 export interface LayoutProps {
     queryClient: QueryClient;
     activeCountry: Country;
-    navBarProps: NavBarProps;
-    categoryTagsProps: CategoryTagsProps;
+    navBarProps?: NavBarProps;
+    categoryTagsProps?: CategoryTagsProps;
     activePath: string;
 }
 
@@ -26,17 +25,27 @@ export const Layout: FC<PropsWithChildren<LayoutProps>> = ({
     activePath,
     children,
 }) => {
+    const subComponents = useMemo(() => {
+        if (categoryTagsProps) {
+            return (
+                <TagContextProvider activeTagId={categoryTagsProps.activeTagId}>
+                    <CategoryTags {...categoryTagsProps} />
+                    {children}
+                </TagContextProvider>
+            );
+        }
+
+        return children;
+    }, [categoryTagsProps, children]);
+
     return (
         <QueryClientProvider client={queryClient}>
             <ReactQueryDevtools />
             <UrlContextProvider activePath={activePath}>
                 <CountryContextProvider activeCountry={activeCountry}>
-                    <TagContextProvider activeTagId={categoryTagsProps.activeTagId}>
-                        <NavBar {...navBarProps} />
-                        <CategoryTags {...categoryTagsProps} />
-                        {children}
-                        <Footer />
-                    </TagContextProvider>
+                    {navBarProps && <NavBar {...navBarProps} />}
+                    {subComponents}
+                    <Footer />
                 </CountryContextProvider>
             </UrlContextProvider>
         </QueryClientProvider>

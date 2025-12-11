@@ -1,7 +1,5 @@
 import path from 'path';
-
 import { defineConfig } from 'vite';
-
 import { config } from './vite.common.config';
 
 const outDir = path.join(config.build?.outDir ?? '', 'client');
@@ -15,6 +13,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 'home/Home.client': './src/pages/home/Home.client.tsx',
+                'error/Error.client': './src/pages/error/Error.client.tsx',
             },
             output: {
                 entryFileNames: '[hash]/[name].js',

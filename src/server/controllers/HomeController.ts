@@ -1,23 +1,18 @@
-import path from 'path';
-import { getHtml, renderFile } from '../utils/render';
 import { Category, TagData, categoryMapping } from '../../constants/categories';
-import { Country, countriesSet } from '../../constants/countries';
+import { getHtml, renderFile } from '../utils/render';
 import { formatUrl } from '../../utils/urlFormatter';
-import type { RequestHandler } from 'express';
-import type { AppLocals } from '../../server/server';
-import type { HomeRenderState } from '../../pages/home/Home.client';
+import { Page } from '../utils/fileMappings';
+import type { Country } from '../../constants/countries';
+import type { HomeRenderState } from '../../pages/home/Home.server';
 import type { UserInputParams } from '../api/newsdata';
+import type { Controller } from '../middleware/type';
+import { AppError } from '../errors/error';
 
-export type Handler = RequestHandler<
-    unknown,
-    string,
-    unknown,
+export type Handler = Controller<
     {
         tag?: Category | string;
-        country?: Country | string;
         page?: string;
-    },
-    AppLocals
+    }
 >;
 
 const breakingTagId: Category = 'breaking';
@@ -69,10 +64,6 @@ export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
     ];
 };
 
-export const inputIsCountry = (country: Country | string): country is Country => {
-    return countriesSet.has(country);
-};
-
 export const inputIsCategory = (category: Category | string): category is Category => {
     return Object.prototype.hasOwnProperty.call(categoryMapping, category);
 };
@@ -106,37 +97,44 @@ export const previousPageUrl = (
 
 export const makeHomeController = (): Handler =>
     async function HomeController(request, response) {
-        if (!!request.query.country && !inputIsCountry(request.query.country)) {
-            response.status(400).send('Invalid country');
-            return;
-        }
-        const activeCountry: Country = inputIsCountry(request.query.country)
-            ? request.query.country
-            : 'ie';
+        const activeCountry = response.locals.activeCountry;
 
         if (!!request.query.tag && !inputIsCategory(request.query.tag)) {
-            response.status(400).send('Invalid tag');
-            return;
+            throw new AppError(400, 'Invalid tag');
         }
         const activeTagId: Category = inputIsCategory(request.query.tag)
             ? request.query.tag
             : 'technology';
 
         const currentHref = request.path;
-        const pageToFetch = request.query.page;
-        const newsDataService = response.locals.newsDataService;
 
-        if (pageToFetch && !newsDataService.getPreviousPageParamsFromPage(pageToFetch)) {
+        if (!request.query.country || !request.query.tag) {
             response.redirect(301, firstPageUrl(currentHref, activeCountry, activeTagId));
             return;
         }
 
-        const latestArticlesPromise = response.locals.newsDataService.getLatest({
+        const pageToFetch = request.query.page;
+        const newsDataService = response.locals.newsDataService;
+        const navBarProps = response.locals.navBarProps;
+
+        if (
+            pageToFetch &&
+            !newsDataService.getPreviousPageParamsFromPage({
+                country: activeCountry,
+                category: activeTagId,
+                nextPage: pageToFetch,
+            })
+        ) {
+            response.redirect(301, firstPageUrl(currentHref, activeCountry, activeTagId));
+            return;
+        }
+
+        const latestArticlesPromise = newsDataService.getLatest({
             country: activeCountry,
             category: activeTagId,
-            page: request.query.page,
+            page: pageToFetch,
         });
-        const breakingArticlesPromise = response.locals.newsDataService.getLatest({
+        const breakingArticlesPromise = newsDataService.getLatest({
             country: activeCountry,
             category: 'breaking',
         });
@@ -149,36 +147,7 @@ export const makeHomeController = (): Handler =>
         const state: HomeRenderState = {
             activePath: currentHref,
             activeCountry: activeCountry,
-            navBarProps: {
-                title: 'DailyNews',
-                navItems: [
-                    {
-                        id: 'home',
-                        name: 'Home',
-                        href: '/',
-                    },
-                    {
-                        id: 'world',
-                        name: 'World',
-                        href: '/world',
-                    },
-                    {
-                        id: 'politics',
-                        name: 'Politics',
-                        href: '/politics',
-                    },
-                    {
-                        id: 'tech',
-                        name: 'Tech',
-                        href: '/tech',
-                    },
-                    {
-                        id: 'sports',
-                        name: 'Sports',
-                        href: '/sports',
-                    },
-                ],
-            },
+            navBarProps: navBarProps,
             categoryTagsProps: {
                 activeTagId: activeTagId,
                 tags: getTagsToDisplay(activeTagId),
@@ -194,21 +163,11 @@ export const makeHomeController = (): Handler =>
                 },
             },
         };
-        const { serverAssetPath, queryClient, manifest } = response.locals;
 
-        const rootHtml = await renderFile(
-            path.join(serverAssetPath, 'home', 'Home.server.mjs'),
-            queryClient,
-            state
-        );
+        const { queryClient, manifest } = response.locals;
+        const page = Page.HOME;
 
-        response.status(200).send(
-            getHtml(
-                { rootHtml, state },
-                {
-                    clientFileName: 'src/pages/home/Home.client.tsx',
-                    manifest,
-                }
-            )
-        );
+        const rootHtml = await renderFile(page, queryClient, state);
+
+        response.status(200).send(getHtml({ rootHtml, state }, { page, manifest }));
     };

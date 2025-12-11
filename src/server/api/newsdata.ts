@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import qs from 'qs';
-import { makeCacheAdapter } from '../service/cacheAdapter';
+import { makeCacheAdapter } from '../service/cache/adapter/axiosCacheAdapter';
 import type { Category } from '../../constants/categories';
 import type { Country } from '../../constants/countries';
 
@@ -71,6 +71,12 @@ export interface GetLatestResponse {
     apiResponse: NewsDataLatestResponse;
 }
 
+export interface PageKey {
+    country: NonNullable<UserInputParams['country']>;
+    category: NonNullable<UserInputParams['category']>;
+    nextPage?: NonNullable<NewsDataLatestResponse['nextPage']>;
+}
+
 export class NewsDataService {
     private apiKey: string;
     private baseUrl = 'https://newsdata.io/api/1';
@@ -110,6 +116,10 @@ export class NewsDataService {
         });
     }
 
+    private getPageKey(pageKey: PageKey): string {
+        return JSON.stringify(pageKey, Object.keys(pageKey).sort())
+    }
+
     private setCurrentPageParamsToNextPage(
         currentParams: UserInputParams,
         nextPage?: string | null
@@ -117,14 +127,20 @@ export class NewsDataService {
         if (!nextPage) {
             return;
         }
-        this.pageMap.set(nextPage, currentParams);
+
+        const key = this.getPageKey({ country: currentParams.country, category: currentParams.category!, nextPage });
+
+        this.pageMap.set(key, currentParams);
     }
 
-    public getPreviousPageParamsFromPage(page: string | undefined): UserInputParams | undefined {
-        if (!page) {
+    public getPreviousPageParamsFromPage(pageKey: PageKey): UserInputParams | undefined {
+        if (!pageKey.nextPage) {
             return;
         }
-        return this.pageMap.get(page);
+
+        const key = this.getPageKey(pageKey);
+
+        return this.pageMap.get(key);
     }
 
     private generateUserInputParams(
@@ -149,8 +165,13 @@ export class NewsDataService {
             const response = await this.instance.get<NewsDataLatestResponse>('/latest', {
                 params: requestParams,
             });
+
             this.setCurrentPageParamsToNextPage(requestParams, response.data.nextPage);
-            const previousPageParams = this.getPreviousPageParamsFromPage(requestParams.page);
+            const previousPageParams = this.getPreviousPageParamsFromPage({
+                country: requestParams.country,
+                category: requestParams.category!,
+                nextPage: requestParams.page
+            });
 
             return {
                 previousParams: previousPageParams,

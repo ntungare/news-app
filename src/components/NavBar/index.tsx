@@ -32,7 +32,7 @@ export const NavBar: FC<NavBarProps> = ({ title, navItems }) => {
     const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
     return (
-        <nav className="bg-white shadow mb-2 relative z-50">
+        <nav className="[grid-area:navbar] bg-white shadow mb-2 relative z-50">
             <div className="px-6 py-4 flex justify-between items-center">
                 <h1 className="text-2xl font-bold">{title}</h1>
                 <div className="flex items-center gap-4 lg:gap-8">
