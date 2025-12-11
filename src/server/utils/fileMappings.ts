@@ -1,18 +1,16 @@
-import { render as homeRenderFn } from '../../pages/home/Home.server';
-import { render as errorRenderFn } from '../../pages/error/Error.server';
-import { RenderFile } from '../../pages/render';
+import path from 'path';
 
 export enum Page {
     HOME,
-    ERROR
+    ERROR,
 }
 
-export const pageToRenderFn = Object.freeze<Record<Page, RenderFile<unknown>['render']>>({
-    [Page.HOME]: homeRenderFn,
-    [Page.ERROR]: errorRenderFn,
+export const pageToRenderFilePath = Object.freeze<Record<Page, string>>({
+    [Page.HOME]: path.join('home', 'Home.server.mjs'),
+    [Page.ERROR]: path.join('error', 'Error.server.mjs'),
 });
 
 export const pageToClientFileName = Object.freeze<Record<Page, string>>({
-    [Page.HOME]: 'src/pages/home/Home.client.tsx',
-    [Page.ERROR]: 'src/pages/error/Error.client.tsx',
+    [Page.HOME]: path.join('src', 'pages', 'home', 'Home.client.tsx'),
+    [Page.ERROR]: path.join('src', 'pages', 'error', 'Error.client.tsx'),
 });

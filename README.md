@@ -1,128 +1,146 @@
 # News App (SSR)
 
-A Server-Side Rendered (SSR) React application designed to display news content, powered by Express and Vite.
+A Server-Side Rendered React application that displays real-time news from [newsdata.io](https://newsdata.io/). Built with Express, Vite, and TypeScript.
 
 ## Features
 
-- **Frontend**: React 19, TailwindCSS 4, TanStack Query.
-- **Backend**: Express server with SSR capabilities.
-- **Build Tool**: Vite (Dual config for client and server bundles).
-- **Language**: TypeScript.
-- **Linting & Formatting**: Oxlint and Oxfmt.
-- **API Integration**: Real-time news fetching via [newsdata.io](https://newsdata.io/).
+- **Server-Side Rendering** with Express and Vite for fast performance and SEO
+- **Multi-layer Caching**: Redis (optional) or in-memory LRU cache with Axios adapter
+- **Category Filtering**: Browse by Technology, Politics, Sports, Business, and 15+ other categories
+- **Country Selection**: Switch between US, Ireland, and India with flag-based dropdown
+- **Pagination**: Navigate through articles with preserved state
+- **Responsive Design**: Tailwind CSS with CSS Grid layouts
+- **Error Handling**: Custom error pages with graceful fallbacks
+- **Podman Support**: Containerized deployment with optional Redis service
 
-## Todo
+## Tech Stack
 
-- [x] **News API Integration**: The implementation for fetching news from an external API is currently pending.
-- [ ] **Main Article Fetch**: Logic for fetching and displaying the main headline article is pending.
-
-## Styling
-
-The application's styling is built using [**Tailwind CSS**](https://tailwindcss.com/), providing a utility-first approach for rapid UI development.
-
--   **CSS Grid**: Utilized extensively for layout management, ensuring responsive and robust designs across mobile, tablet, and desktop views.
--   **Responsive Design**: Tailwind's breakpoint system is used to adapt layouts for different screen sizes.
-
-## Prerequisites
-
-- Node.js
-- [pnpm](https://pnpm.io/) (Package Manager) - This project uses Corepack or requires `pnpm` to be installed. The project specifies `packageManager: pnpm@10.24.0`.
-
-## Configuration
-
-This project requires the following environment variables to be set in a `.env` file in the root directory:
-
-- `NEWSDATA_IO_API_KEY`: API key for [newsdata.io](https://newsdata.io/).
+**Frontend**: React 19, TailwindCSS 4, TanStack Query  
+**Backend**: Express, TypeScript  
+**Build**: Vite (dual client/server configs)  
+**Cache**: Redis (optional) + LRU fallback  
+**Tools**: Oxlint, Oxfmt
 
 ## Getting Started
 
-### Installation
+### Prerequisites
 
-Install the dependencies:
+- Node.js
+- pnpm (v10.25.0)
+- [Podman & Podman Compose](https://podman.io/) (optional, for Redis) - Podman is a Docker-compatible daemonless container engine
+
+### Installation
 
 ```bash
 pnpm install
 ```
 
-### Development
+### Configuration
 
-To start the development server with hot module replacement and watch mode:
+Create a `.env` file:
+
+```dotenv
+NEWSDATA_IO_API_KEY=your_api_key_here
+# Optional Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
+
+### Development
 
 ```bash
 pnpm start:dev
 ```
 
-This command concurrently runs:
-- The Node.js server (with `ts-node-dev`)
-- Vite build watcher for the client bundle
-- Vite build watcher for the server bundle
+Runs the server with hot reload at `http://localhost:8080`.
 
-The application will be accessible at `http://localhost:8080`.
+#### Podman
+
+**Option 1: Redis in container, app on host (recommended for development)**
+
+```bash
+# Start Redis container
+podman compose up redis
+
+# In another terminal, start the app on host
+pnpm run start:dev
+```
+
+**Option 2: Both Redis and app in containers**
+
+```bash
+# Start both Redis and app
+podman compose up app
+```
+
+> **Note**: Live refresh (bundle rebuilds on file changes) does not work when running the app in a container. You may need to restart the app to see changes.
 
 ### Production
 
-#### Building for Production
-
-To build the application for production:
-
 ```bash
 pnpm build
-```
-
-This will run:
-1. `build:node`: Compiles the server TypeScript code.
-2. `build:bundles`: Builds both client and server bundles using Vite.
-
-Artifacts are output to the `dist` directory.
-
-#### Running in Production
-
-After building, you can start the production server:
-
-```bash
 pnpm start
 ```
 
-The application will be accessible at `http://localhost:8080`.
-
-### Docker
-
-You can containerize the application using the included `Dockerfile`.
-
-#### Build the Image
-
-```bash
-docker build -t news-app .
-```
-
-#### Run the Container
-
-The default port exposed is `8080`.
-
-```bash
-docker run -p 8080:8080 news-app
-```
-
-The application will be accessible at `http://localhost:8080`.
-
-### Notes
-
-The port for development, production, and Docker can be overridden via the `PORT` environment variable and the `PORT` build argument, respectively.
-
-
 ## Project Structure
 
-- `src/server`: Contains the Express server setup and SSR logic.
-- `src/server/api`: API integrations and services.
-- `src/pages`: React application pages and components.
-- `vite.client.config.ts`: Vite configuration for the client-side bundle.
-- `vite.server.config.ts`: Vite configuration for the server-side bundle.
+```
+src/
+├── server/          # Express server, SSR, middleware
+│   ├── api/         # NewsData API integration
+│   ├── controllers/ # Route handlers
+│   ├── middleware/  # Country detection, navbar
+│   └── service/     # Caching (Redis + LRU)
+├── pages/           # React pages (home, error)
+├── components/      # UI components (Article, NavBar, etc.)
+├── template/        # Layout wrapper
+├── context/         # React contexts (URL, Country, Tag)
+├── hooks/           # Custom hooks (URL state)
+└── constants/       # Categories, countries
+```
+
+## Key Features
+
+### Caching Strategy
+
+Three-layer approach for optimal performance:
+1. **Axios adapter** - HTTP client-level caching
+2. **Redis** - Distributed cache (when configured)
+3. **LRU cache** - In-memory fallback
+
+### Pagination
+
+- Server tracks pagination tokens in a Map
+- Previous/Next navigation with URL state preservation
+- Automatic redirect for invalid page tokens
+
+### Country & Category Filtering
+
+- **Countries**: US, Ireland (default), India
+- **Categories**: Breaking, Business, Crime, Domestic, Education, Entertainment, Environment, Food, Health, Lifestyle, Politics, Science, Sports, Technology, Tourism, World, Other
+- Middleware validates and normalizes query parameters
 
 ## Scripts
 
-- `pnpm clean`: Remove the `dist` directory.
-- `pnpm build`: Build for production.
-- `pnpm start`: Start production server.
-- `pnpm start:dev`: Start development server.
-- `pnpm lint`: Run `oxlint`.
-- `pnpm format`: Run `oxfmt`.
+```bash
+pnpm clean         # Remove dist/
+pnpm build         # Production build
+pnpm start         # Run production server
+pnpm start:dev     # Development with hot reload
+pnpm lint          # Run oxlint
+pnpm format        # Run oxfmt
+pnpm check         # TypeScript type checking
+```
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `NEWSDATA_IO_API_KEY` | Yes | - | API key for newsdata.io |
+| `REDIS_HOST` | No | `localhost` | Redis hostname |
+| `REDIS_PORT` | No | `6379` | Redis port |
+| `NODE_ENV` | No | - | `production` or `development` |
+
+---
+
+*Built by [Ninad Tungare](mailto:ninad.tungare@gmail.com) • MIT License*

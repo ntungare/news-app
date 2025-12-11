@@ -10,7 +10,6 @@ export default defineConfig({
         ...config.build,
         outDir,
         ssr: true,
-        ssrManifest: true,
         rollupOptions: {
             input: {
                 'home/Home.server': './src/pages/home/Home.server.tsx',

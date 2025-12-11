@@ -12,8 +12,8 @@ import type { DotenvParseOutput } from 'dotenv';
 import { makeErrorController } from './controllers/ErrorController';
 
 export const makeApp = async (_env: DotenvParseOutput): Promise<Express> => {
+    const manifest = await getManifests();
     await CacheService.getInstance().init();
-    const manifest = getManifests();
     const clientAssetPath = getClientAssetPath();
     const serverAssetPath = getServerAssetPath();
     const queryClient = new QueryClient();

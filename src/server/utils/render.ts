@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 import htmlescape from 'htmlescape';
-import { Page, pageToClientFileName, pageToRenderFn } from './fileMappings';
+import { Page, pageToClientFileName, pageToRenderFilePath } from './fileMappings';
 import type { QueryClient } from '@tanstack/react-query';
-import type { RenderState } from '../../pages/render';
+import type { RenderFile, RenderState } from '../../pages/render';
 
 export const getClientAssetPath = (): string => {
     return path.resolve('dist', 'assets', 'client');
@@ -24,11 +24,24 @@ export interface Manifest {
     };
 }
 
-export const getManifests = (): Manifest => {
+export const getManifests = async (): Promise<Manifest> => {
     const clientAssetPath = getClientAssetPath();
-    const manifest: Manifest = JSON.parse(
-        fs.readFileSync(path.join(clientAssetPath, '.vite', 'manifest.json')).toString()
-    );
+    let manifest: Manifest;
+    let tryCount = 0;
+    while (!manifest) {
+        if (!fs.existsSync(path.join(clientAssetPath, '.vite', 'manifest.json'))) {
+            console.log('Waiting for manifest to be generated...');
+            tryCount++;
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            if (tryCount > 10) {
+                throw new Error('Manifest not found');
+            }
+        } else {
+            manifest = JSON.parse(
+                fs.readFileSync(path.join(clientAssetPath, '.vite', 'manifest.json')).toString()
+            );
+        }
+    }
 
     return manifest;
 };
@@ -95,11 +108,17 @@ export const renderFile = async <T>(
     queryClient: QueryClient,
     state: RenderState<T>
 ): Promise<string> => {
-    const renderFn = pageToRenderFn[page];
+    const serverAssetPath = getServerAssetPath();
+    const renderFilePath = path.join(serverAssetPath, pageToRenderFilePath[page]);
+    const file: RenderFile<T> = await import(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        renderFilePath
+    );
 
     let rootHtml = '';
     try {
-        rootHtml = renderFn({ queryClient, state });
+        rootHtml = file.render({ queryClient, state });
     } catch (err) {
         console.error('Render failed', err);
     }
