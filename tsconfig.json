@@ -10,8 +10,8 @@
         "skipLibCheck": true,
         "noImplicitAny": true,
         "esModuleInterop": true,
-        "typeRoots": ["./node_modules/@types", "./src/types"]
+        "typeRoots": ["./node_modules/@types", "./src/types"],
     },
-    "include": ["./src/**/*"],
-    "exclude": ["./dist", "node_modules"]
+    "include": ["./src/**/*", "public"],
+    "exclude": ["./dist", "node_modules"],
 }

@@ -1,5 +1,6 @@
 import path from 'path';
 import { defineConfig } from 'vite';
+
 import { config } from './vite.common.config';
 
 const outDir = path.join(config.build?.outDir ?? '', 'client');

@@ -1,10 +1,12 @@
+import { AppError } from '../errors/error';
 import { Page } from '../utils/fileMappings';
 import { getHtml, renderFile } from '../utils/render';
-import { AppError } from '../errors/error';
+
 import type { ErrorRequestHandler } from 'express';
+
 import type { Country } from '../../constants/countries';
-import type { AppLocals } from '../middleware/type';
 import type { ErrorRenderState } from '../../pages/error/Error.server';
+import type { AppLocals } from '../middleware/type';
 
 export type ErrorHandler = ErrorRequestHandler<
     unknown,

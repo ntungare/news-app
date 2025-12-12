@@ -4,8 +4,17 @@
     "tabWidth": 4,
     "semi": true,
     "singleQuote": true,
-    "ignorePatterns": [
-        "node_modules",
-        "dist"
-    ]
+    "ignorePatterns": ["node_modules", "dist"],
+    "experimentalSortImports": {
+        "newlinesBetween": true,
+        "groups": [
+            ["value-builtin", "value-external"],
+            ["value-internal"],
+            ["value-parent", "value-sibling", "value-index"],
+            ["type-import"],
+            ["type-internal"],
+            ["type-parent", "type-sibling", "type-index"],
+            ["unknown"],
+        ],
+    },
 }

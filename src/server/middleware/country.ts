@@ -1,5 +1,6 @@
 import { countriesSet, Country } from '../../constants/countries';
 import { AppError } from '../errors/error';
+
 import type { Middleware } from './type';
 
 export const inputIsCountry = (country: Country | string): country is Country => {

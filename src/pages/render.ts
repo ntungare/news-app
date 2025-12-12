@@ -1,4 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
+
 import type { LayoutProps } from '../template/Layout';
 
 export interface RenderState<T> extends Omit<LayoutProps, 'queryClient'> {

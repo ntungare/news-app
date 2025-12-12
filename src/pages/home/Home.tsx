@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
 import classnames from 'classnames';
+import React, { FC } from 'react';
+
 import { ArticleGrid, ArticleGridProps } from '../../components/ArticleGrid';
 import { TrendingSidebar, TrendingSidebarProps } from '../../components/TrendingSidebar';
 

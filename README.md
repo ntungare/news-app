@@ -104,6 +104,7 @@ src/
 ### Caching Strategy
 
 Three-layer approach for optimal performance:
+
 1. **Axios adapter** - HTTP client-level caching
 2. **Redis** - Distributed cache (when configured)
 3. **LRU cache** - In-memory fallback
@@ -134,13 +135,13 @@ pnpm check         # TypeScript type checking
 
 ## Environment Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `NEWSDATA_IO_API_KEY` | Yes | - | API key for newsdata.io |
-| `REDIS_HOST` | No | `localhost` | Redis hostname |
-| `REDIS_PORT` | No | `6379` | Redis port |
-| `NODE_ENV` | No | - | `production` or `development` |
+| Variable              | Required | Default     | Description                   |
+| --------------------- | -------- | ----------- | ----------------------------- |
+| `NEWSDATA_IO_API_KEY` | Yes      | -           | API key for newsdata.io       |
+| `REDIS_HOST`          | No       | `localhost` | Redis hostname                |
+| `REDIS_PORT`          | No       | `6379`      | Redis port                    |
+| `NODE_ENV`            | No       | -           | `production` or `development` |
 
 ---
 
-*Built by [Ninad Tungare](mailto:ninad.tungare@gmail.com) • MIT License*
+_Built by [Ninad Tungare](mailto:ninad.tungare@gmail.com) • MIT License_

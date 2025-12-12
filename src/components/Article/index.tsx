@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
+
 import { useUrlState } from '../../hooks/urlState';
 import { formatUrl } from '../../utils/urlFormatter';
+
 import type { NewsDataArticle } from '../../server/api/newsdata';
 
 export const Article: FC<NewsDataArticle> = ({

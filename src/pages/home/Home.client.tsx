@@ -1,4 +1,4 @@
-import { Home } from './Home';
 import { hydrateComponent } from '../hydrate';
+import { Home } from './Home';
 
-hydrateComponent(Home)
+hydrateComponent(Home);

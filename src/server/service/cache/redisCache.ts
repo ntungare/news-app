@@ -1,4 +1,5 @@
 import { createClient } from 'redis';
+
 import type { RedisClient } from './cacheWrapper';
 
 export const makeRedisCache = async (): Promise<RedisClient | undefined> => {

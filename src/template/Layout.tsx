@@ -1,12 +1,14 @@
-import React, { FC, PropsWithChildren, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { UrlContextProvider } from '../context/url';
-import { CountryContextProvider } from '../context/country';
-import { TagContextProvider } from '../context/tag';
-import { NavBar, NavBarProps } from '../components/NavBar';
+import React, { FC, PropsWithChildren, useMemo } from 'react';
+
 import { CategoryTags, CategoryTagsProps } from '../components/CategoryTags';
 import { Footer } from '../components/Footer';
+import { NavBar, NavBarProps } from '../components/NavBar';
+import { CountryContextProvider } from '../context/country';
+import { TagContextProvider } from '../context/tag';
+import { UrlContextProvider } from '../context/url';
+
 import type { Country } from '../constants/countries';
 
 export interface LayoutProps {

@@ -1,7 +1,9 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+
 import { Layout } from '../../template/Layout';
 import { Error, ErrorProps } from './Error';
+
 import type { RenderFile, RenderState } from '../render';
 
 export type ErrorRenderState = RenderState<ErrorProps>;

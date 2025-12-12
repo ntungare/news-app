@@ -1,7 +1,7 @@
-import { LRUCache } from 'lru-cache';
-import { createClient } from 'redis';
 import cloneDeep from 'lodash-es/cloneDeep';
+import { LRUCache } from 'lru-cache';
 import objectHash from 'object-hash';
+import { createClient } from 'redis';
 
 export type RedisClient = ReturnType<typeof createClient>;
 

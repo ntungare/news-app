@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
 import classnames from 'classnames';
+import React, { FC } from 'react';
+
 import { useUrlState } from '../../hooks/urlState';
 import { formatUrl } from '../../utils/urlFormatter';
 

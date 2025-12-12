@@ -1,12 +1,15 @@
-import React, { FC, useState, useMemo, memo } from 'react';
 import classnames from 'classnames';
-import { FaBars, FaXmark } from 'react-icons/fa6';
-import US from 'country-flag-icons/react/3x2/US';
 import IE from 'country-flag-icons/react/3x2/IE';
 import IN from 'country-flag-icons/react/3x2/IN';
+import US from 'country-flag-icons/react/3x2/US';
+import React, { FC, useState, useMemo, memo } from 'react';
+import { FaBars, FaXmark } from 'react-icons/fa6';
+
 import { useUrlState } from '../../hooks/urlState';
 import { formatUrl } from '../../utils/urlFormatter';
+
 import type { FlagComponent } from 'country-flag-icons/react/3x2';
+
 import type { Country } from '../../constants/countries';
 
 export interface NavBarProps {

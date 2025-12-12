@@ -1,41 +1,41 @@
 services:
-  app:
-    build:
-      dockerfile: Dockerfile
-      context: .
-      target: development
-    env_file:
-      - .env.docker
-    volumes:
-      # Mount the host directory to the container's working directory
-      - .:/app
-      # Exclude node_modules to ensure container's modules are used
-      - /app/node_modules
-    ports:
-      - "8080:8080"
-      - "9220:9220"
-    environment:
-      - ENV_FILE=.env.docker
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    healthcheck:
-      test: [ "CMD", "ping", "localhost:8080" ]
-      interval: 1s
-      timeout: 3s
-      retries: 5
-    depends_on:
-      - redis
+    app:
+        build:
+            dockerfile: Dockerfile
+            context: .
+            target: development
+        env_file:
+            - .env.docker
+        volumes:
+            # Mount the host directory to the container's working directory
+            - .:/app
+            # Exclude node_modules to ensure container's modules are used
+            - /app/node_modules
+        ports:
+            - '8080:8080'
+            - '9220:9220'
+        environment:
+            - ENV_FILE=.env.docker
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+        healthcheck:
+            test: ['CMD', 'ping', 'localhost:8080']
+            interval: 1s
+            timeout: 3s
+            retries: 5
+        depends_on:
+            - redis
 
-  redis:
-    image: redis:latest
-    volumes:
-      - ./redis/data:/data
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
-      interval: 1s
-      timeout: 3s
-      retries: 5
-    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    redis:
+        image: redis:latest
+        volumes:
+            - ./redis/data:/data
+            - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+        ports:
+            - '6379:6379'
+        healthcheck:
+            test: ['CMD-SHELL', 'redis-cli ping | grep PONG']
+            interval: 1s
+            timeout: 3s
+            retries: 5
+        command: ['redis-server', '/usr/local/etc/redis/redis.conf']

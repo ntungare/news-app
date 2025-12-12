@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
+
 import { Article } from '../Article';
 import { Pagination } from '../Pagination';
+
 import type { NewsDataArticle } from '../../server/api/newsdata';
 
 export interface ArticleGridProps {

@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
 import classnames from 'classnames';
+import React, { FC } from 'react';
+
 import { NewsDataArticle } from '../../server/api/newsdata';
 import { TrendingArticle } from '../TrendingArticle';
 

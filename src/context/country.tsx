@@ -1,4 +1,5 @@
 import React, { createContext, useContext, FC, PropsWithChildren } from 'react';
+
 import type { Country } from '../constants/countries';
 
 export interface CountryContextT {

@@ -1,19 +1,18 @@
 import { Category, TagData, categoryMapping } from '../../constants/categories';
-import { getHtml, renderFile } from '../utils/render';
 import { formatUrl } from '../../utils/urlFormatter';
+import { AppError } from '../errors/error';
 import { Page } from '../utils/fileMappings';
+import { getHtml, renderFile } from '../utils/render';
+
 import type { Country } from '../../constants/countries';
 import type { HomeRenderState } from '../../pages/home/Home.server';
 import type { UserInputParams } from '../api/newsdata';
 import type { Controller } from '../middleware/type';
-import { AppError } from '../errors/error';
 
-export type Handler = Controller<
-    {
-        tag?: Category | string;
-        page?: string;
-    }
->;
+export type Handler = Controller<{
+    tag?: Category | string;
+    page?: string;
+}>;
 
 const breakingTagId: Category = 'breaking';
 const domesticTagId: Category = 'domestic';

@@ -1,7 +1,10 @@
 import { getAdapter } from 'axios';
+
 import { CacheService } from '../index';
-import type { CacheKeyParams } from '../cacheWrapper';
+
 import type { AxiosAdapterConfig, AxiosAdapter, AxiosResponse } from 'axios';
+
+import type { CacheKeyParams } from '../cacheWrapper';
 
 export const makeCacheAdapter = (
     adapter?: AxiosAdapterConfig | AxiosAdapterConfig[]

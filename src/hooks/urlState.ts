@@ -1,7 +1,9 @@
 import { useContext } from 'react';
+
 import { CountryContext } from '../context/country';
 import { TagContext } from '../context/tag';
 import { UrlContext } from '../context/url';
+
 import type { Category } from '../constants/categories';
 import type { Country } from '../constants/countries';
 

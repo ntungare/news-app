@@ -1,8 +1,11 @@
-import path from 'path';
 import fs from 'fs';
 import htmlescape from 'htmlescape';
+import path from 'path';
+
 import { Page, pageToClientFileName, pageToRenderFilePath } from './fileMappings';
+
 import type { QueryClient } from '@tanstack/react-query';
+
 import type { RenderFile, RenderState } from '../../pages/render';
 
 export const getClientAssetPath = (): string => {
@@ -86,7 +89,8 @@ export const getHtml = <T>(
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My First Webpage</title>
+    <title>DailyNews</title>
+    <link rel="icon" type="image/svg" sizes="any" href="/assets/images/favicon.svg" fetchpriority="high" />
     ${cssFiles
         .map(
             (cssPath) =>

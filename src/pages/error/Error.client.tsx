@@ -1,4 +1,4 @@
-import { Error } from './Error';
 import { hydrateComponent } from '../hydrate';
+import { Error } from './Error';
 
-hydrateComponent(Error)
+hydrateComponent(Error);

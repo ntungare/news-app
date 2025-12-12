@@ -4,7 +4,7 @@
         "eslint:recommended",
         "plugin:unicorn/recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:@tanstack/eslint-plugin-query/recommended",
+        "plugin:@tanstack/eslint-plugin-query/recommended"
     ],
     "env": {
         "browser": true,

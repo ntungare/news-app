@@ -1,7 +1,9 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+
 import { Layout } from '../../template/Layout';
 import { Home, HomeProps } from './Home';
+
 import type { RenderFile, RenderState } from '../render';
 
 export type HomeRenderState = RenderState<HomeProps>;

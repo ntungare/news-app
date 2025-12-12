@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+
 import type { NewsDataArticle } from '../../server/api/newsdata';
 
 export const TrendingArticle: FC<NewsDataArticle> = ({

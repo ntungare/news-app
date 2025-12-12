@@ -142,10 +142,10 @@ vite.config.ts.timestamp-*
 
 # VS Code
 .vscode/
+.zed/
 
 # MacOS
 .DS_Store
 
 # Redis
 redis/data
-

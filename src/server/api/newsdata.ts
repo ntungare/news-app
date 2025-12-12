@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 import qs from 'qs';
+
 import { makeCacheAdapter } from '../service/cache/adapter/axiosCacheAdapter';
+
 import type { Category } from '../../constants/categories';
 import type { Country } from '../../constants/countries';
 
@@ -117,7 +119,7 @@ export class NewsDataService {
     }
 
     private getPageKey(pageKey: PageKey): string {
-        return JSON.stringify(pageKey, Object.keys(pageKey).sort())
+        return JSON.stringify(pageKey, Object.keys(pageKey).sort());
     }
 
     private setCurrentPageParamsToNextPage(
@@ -128,7 +130,11 @@ export class NewsDataService {
             return;
         }
 
-        const key = this.getPageKey({ country: currentParams.country, category: currentParams.category!, nextPage });
+        const key = this.getPageKey({
+            country: currentParams.country,
+            category: currentParams.category!,
+            nextPage,
+        });
 
         this.pageMap.set(key, currentParams);
     }
@@ -170,7 +176,7 @@ export class NewsDataService {
             const previousPageParams = this.getPreviousPageParamsFromPage({
                 country: requestParams.country,
                 category: requestParams.category!,
-                nextPage: requestParams.page
+                nextPage: requestParams.page,
             });
 
             return {

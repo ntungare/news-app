@@ -1,14 +1,15 @@
-import net from 'net';
+import dotenv from 'dotenv';
 import http1 from 'http';
 import http2 from 'http2';
-import dotenv from 'dotenv';
+import net from 'net';
+
 import { makeApp } from './server';
 
 const envFiles = [];
 if (process.env.ENV_FILE) {
     envFiles.push(process.env.ENV_FILE);
 } else {
-    envFiles.push(`.env.${process.env.NODE_ENV.toLowerCase()}`)
+    envFiles.push(`.env.${process.env.NODE_ENV.toLowerCase()}`);
 }
 const config = dotenv.config({ path: envFiles, quiet: true });
 if (config.error) {
