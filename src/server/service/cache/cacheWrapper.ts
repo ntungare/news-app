@@ -60,9 +60,12 @@ export class CacheWrapper {
     public set(cacheKey: CacheKeyParams, value: string): void {
         const normalizedCacheKey = generateKey(cacheKey);
         if (this.redisCache) {
-            this.redisCache.set(normalizedCacheKey, value, {
-                expiration: { type: 'PX', value: ttlMilliseconds },
-            });
+            this.redisCache
+                .set(normalizedCacheKey, value, {
+                    expiration: { type: 'PX', value: ttlMilliseconds },
+                })
+                .then(() => {})
+                .catch(() => {});
             return;
         }
 

@@ -10,7 +10,7 @@ import type { UserInputParams } from '../api/newsdata';
 import type { Controller } from '../middleware/type';
 
 export type Handler = Controller<{
-    tag?: Category | string;
+    tag?: Category;
     page?: string;
 }>;
 
@@ -63,7 +63,7 @@ export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
     ];
 };
 
-export const inputIsCategory = (category: Category | string): category is Category => {
+export const inputIsCategory = (category?: string): category is Category => {
     return Object.prototype.hasOwnProperty.call(categoryMapping, category);
 };
 
@@ -101,7 +101,7 @@ export const makeHomeController = (): Handler =>
         if (!!request.query.tag && !inputIsCategory(request.query.tag)) {
             throw new AppError(400, 'Invalid tag');
         }
-        const activeTagId: Category = inputIsCategory(request.query.tag)
+        const activeTagId = inputIsCategory(request.query.tag)
             ? request.query.tag
             : 'technology';
 

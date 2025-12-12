@@ -20,7 +20,7 @@ export type Middleware<T = {}> = RequestHandler<
     string,
     unknown,
     {
-        country?: Country | string;
+        country?: Country;
     } & T,
     AppLocals
 >;

@@ -54,13 +54,13 @@ export const collectCssFiles = (fileName: string, manifest: Manifest): Array<str
 
     const currentFileData = manifest[fileName];
     if (currentFileData && currentFileData.css) {
-        currentFileData.css.forEach(cssFiles.add, cssFiles);
+        currentFileData.css.forEach((cssFile) => cssFiles.add(cssFile));
     }
     if (currentFileData && currentFileData.imports) {
         const subFiles = currentFileData.imports.flatMap((importedFile) =>
             collectCssFiles(importedFile, manifest)
         );
-        subFiles.forEach(cssFiles.add, cssFiles);
+        subFiles.forEach((cssFile) => cssFiles.add(cssFile));
     }
 
     return Array.from(cssFiles);

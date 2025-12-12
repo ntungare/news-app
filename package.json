@@ -30,7 +30,7 @@
         "start:dev:bundles": "concurrently --prefixColors auto pnpm:start:dev:bundle:client pnpm:start:dev:bundle:server",
         "start:dev:bundle:client": "pnpm run build:bundle:client --minify=false --watch --mode=development",
         "start:dev:bundle:server": "pnpm run build:bundle:server --minify=false --watch --mode=development",
-        "lint": "oxlint .",
+        "lint": "oxlint --type-aware .",
         "format": "oxfmt"
     },
     "dependencies": {
@@ -78,6 +78,7 @@
         "globals": "^16.5.0",
         "oxfmt": "^0.17.0",
         "oxlint": "^1.32.0",
+        "oxlint-tsgolint": "^0.8.6",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.49.0",
