@@ -16,9 +16,7 @@ export const countryMiddlware: Middleware = (request, response, next) => {
         throw new AppError(400, 'Invalid country');
     }
 
-    const activeCountry = inputIsCountry(request.query.country)
-        ? request.query.country
-        : 'ie';
+    const activeCountry = inputIsCountry(request.query.country) ? request.query.country : 'ie';
 
     if (!request.query.country) {
         response.redirect(301, `/?country=${activeCountry}`);

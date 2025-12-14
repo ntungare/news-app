@@ -30,8 +30,8 @@
         "start:dev:bundles": "concurrently --prefixColors auto pnpm:start:dev:bundle:client pnpm:start:dev:bundle:server",
         "start:dev:bundle:client": "pnpm run build:bundle:client --minify=false --watch --mode=development",
         "start:dev:bundle:server": "pnpm run build:bundle:server --minify=false --watch --mode=development",
-        "lint": "oxlint --type-aware .",
-        "format": "oxfmt"
+        "lint": "oxlint --type-aware src",
+        "format": "oxfmt src"
     },
     "dependencies": {
         "@tanstack/react-query": "^5.90.12",

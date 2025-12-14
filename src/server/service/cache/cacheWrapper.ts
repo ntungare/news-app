@@ -24,8 +24,8 @@ const generateKey = (cacheKeyParams: CacheKeyParams): string => {
     return objectHash(cacheKeyObject);
 };
 
-// 1 hour
-const ttlMilliseconds = 1000 * 60 * 60;
+// 12 hour = 1000 ms * 60 s * 60 m * 12 h
+const ttlMilliseconds = 1000 * 60 * 60 * 12;
 
 export class CacheWrapper {
     private redisCache: RedisClient | undefined;

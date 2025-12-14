@@ -101,9 +101,7 @@ export const makeHomeController = (): Handler =>
         if (!!request.query.tag && !inputIsCategory(request.query.tag)) {
             throw new AppError(400, 'Invalid tag');
         }
-        const activeTagId = inputIsCategory(request.query.tag)
-            ? request.query.tag
-            : 'technology';
+        const activeTagId = inputIsCategory(request.query.tag) ? request.query.tag : 'technology';
 
         const currentHref = request.path;
 

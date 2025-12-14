@@ -25,7 +25,7 @@ export const makeApp = async (_env: DotenvParseOutput): Promise<Express> => {
     const app = express();
     app.use(morgan('tiny'));
     app.use(compression());
-    app.use('/assets', express.static(clientAssetPath));
+    app.use('/assets', express.static(clientAssetPath, { maxAge: '1d' }));
     app.use(
         makeInjectLocalsMiddleware({
             manifest,
