@@ -1,30 +1,46 @@
+x-app: &app-config
+  env_file:
+    - .env.docker
+  ports:
+    - '8080:8080'
+    - '9220:9220'
+  environment:
+    ENV_FILE: .env.docker
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
+  healthcheck:
+    test: [ 'CMD', 'ping', 'localhost:8080' ]
+    interval: 1s
+    timeout: 3s
+    retries: 5
+  depends_on:
+    redis:
+      condition: service_healthy
+      restart: true
+  stop_grace_period: 2s
+
 services:
-  app:
+  app-dev:
     build:
       dockerfile: Dockerfile
       context: .
       target: development
-    env_file:
-      - .env.docker
+    <<: *app-config
     volumes:
       # Mount the host directory to the container's working directory
       - .:/app
       # Exclude node_modules to ensure container's modules are used
       - /app/node_modules
-    ports:
-      - '8080:8080'
-      - '9220:9220'
-    environment:
-      ENV_FILE: .env.docker
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    healthcheck:
-      test: [ 'CMD', 'ping', 'localhost:8080' ]
-      interval: 1s
-      timeout: 3s
-      retries: 5
-    depends_on:
-      - redis
+
+  app-prod:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: production
+    <<: *app-config
+    volumes:
+      # Mount the host .env.docker to the container
+      - ./.env.docker:/app/.env.docker
 
   redis:
     image: redis:latest
@@ -39,3 +55,4 @@ services:
       timeout: 3s
       retries: 5
     command: [ 'redis-server', '/usr/local/etc/redis/redis.conf' ]
+    stop_grace_period: 10s

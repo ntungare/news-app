@@ -17,7 +17,15 @@ export const makeRedisCache = async (): Promise<RedisClient | undefined> => {
     }
 
     if (redisCache) {
-        await redisCache.on('error', (err) => console.log('Redis Client Error', err)).connect();
+        await redisCache
+            .on('error', (thrown) => {
+                if (thrown instanceof Error) {
+                    throw new Error('Redis Client Error', { cause: thrown.cause });
+                }
+
+                throw new Error('Redis Client Error');
+            })
+            .connect();
     }
 
     return redisCache;

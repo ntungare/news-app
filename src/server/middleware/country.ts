@@ -3,6 +3,8 @@ import { AppError } from '../errors/error';
 
 import type { Middleware } from './type';
 
+export const DEFAULT_COUNTRY: Country = 'ie';
+
 export const inputIsCountry = (country: string): country is Country => {
     return countriesSet.has(country);
 };
@@ -16,10 +18,12 @@ export const countryMiddlware: Middleware = (request, response, next) => {
         throw new AppError(400, 'Invalid country');
     }
 
-    const activeCountry = inputIsCountry(request.query.country) ? request.query.country : 'ie';
+    const activeCountry = inputIsCountry(request.query.country)
+        ? request.query.country
+        : DEFAULT_COUNTRY;
 
     if (!request.query.country) {
-        response.redirect(301, `/?country=${activeCountry}`);
+        response.redirect(302, `/?country=${activeCountry}`);
         return;
     }
 

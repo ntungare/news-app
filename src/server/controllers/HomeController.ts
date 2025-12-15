@@ -14,12 +14,59 @@ export type Handler = Controller<{
     page?: string;
 }>;
 
+export const DEFAULT_TAG: Category = 'top';
+
+export const inputIsCategory = (category?: string): category is Category => {
+    return Object.prototype.hasOwnProperty.call(categoryMapping, category);
+};
+
+export const getActiveTag = (request: Parameters<Handler>[0]) => {
+    if (!!request.query.tag && !inputIsCategory(request.query.tag)) {
+        throw new AppError(400, 'Invalid tag');
+    }
+    return inputIsCategory(request.query.tag) ? request.query.tag : DEFAULT_TAG;
+};
+
+export const firstPageUrl = (
+    currentHref: string,
+    activeCountry: Country,
+    activeTagId: Category
+): string | undefined => {
+    return formatUrl({ path: currentHref, params: { country: activeCountry, tag: activeTagId } });
+};
+
+export const previousPageUrl = (
+    currentHref: string,
+    previousPageParams: UserInputParams | undefined
+): string | undefined => {
+    if (!previousPageParams) {
+        return undefined;
+    }
+
+    const { country, category, page } = previousPageParams;
+    let tag: Category;
+    if (Array.isArray(category)) {
+        tag = category[0];
+    } else {
+        tag = category;
+    }
+
+    return formatUrl({ path: currentHref, params: { country, tag, page } });
+};
+
 const breakingTagId: Category = 'breaking';
 const domesticTagId: Category = 'domestic';
 const worldTagId: Category = 'world';
+const topTagId: Category = 'top';
 const lastTagId: Category = 'other';
 
-const tagsToFilterOut = new Set<Category>([breakingTagId, domesticTagId, worldTagId, lastTagId]);
+const tagsToFilterOut = new Set<Category>([
+    breakingTagId,
+    topTagId,
+    domesticTagId,
+    worldTagId,
+    lastTagId,
+]);
 
 export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
     const allTags: Array<TagData> = Object.entries(categoryMapping)
@@ -32,6 +79,12 @@ export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
         .sort((a, b) => a.name.localeCompare(b.name));
 
     const firstTags: Array<TagData> = [];
+    if (activeTagId !== topTagId) {
+        firstTags.push({
+            id: topTagId,
+            name: categoryMapping[topTagId],
+        });
+    }
     if (activeTagId !== domesticTagId) {
         firstTags.push({
             id: domesticTagId,
@@ -63,50 +116,14 @@ export const getTagsToDisplay = (activeTagId: Category): Array<TagData> => {
     ];
 };
 
-export const inputIsCategory = (category?: string): category is Category => {
-    return Object.prototype.hasOwnProperty.call(categoryMapping, category);
-};
-
-export const firstPageUrl = (
-    currentHref: string,
-    activeCountry: Country,
-    activeTagId: Category
-): string | undefined => {
-    return formatUrl({ path: currentHref, params: { country: activeCountry, tag: activeTagId } });
-};
-
-export const previousPageUrl = (
-    currentHref: string,
-    previousPageParams: UserInputParams | undefined
-): string | undefined => {
-    if (!previousPageParams) {
-        return undefined;
-    }
-
-    const { country, category, page } = previousPageParams;
-    let tag: Category;
-    if (Array.isArray(category)) {
-        tag = category[0];
-    } else {
-        tag = category;
-    }
-
-    return formatUrl({ path: currentHref, params: { country, tag, page } });
-};
-
 export const makeHomeController = (): Handler =>
     async function HomeController(request, response) {
-        const activeCountry = response.locals.activeCountry;
-
-        if (!!request.query.tag && !inputIsCategory(request.query.tag)) {
-            throw new AppError(400, 'Invalid tag');
-        }
-        const activeTagId = inputIsCategory(request.query.tag) ? request.query.tag : 'technology';
-
         const currentHref = request.path;
+        const activeCountry = response.locals.activeCountry;
+        const activeTagId = getActiveTag(request);
 
         if (!request.query.country || !request.query.tag) {
-            response.redirect(301, firstPageUrl(currentHref, activeCountry, activeTagId));
+            response.redirect(302, firstPageUrl(currentHref, activeCountry, activeTagId));
             return;
         }
 

@@ -20,17 +20,14 @@ export const Pagination: FC<PaginationProps> = ({ previousPageUrl, nextPage }) =
         (previousPageUrl || nextPage) && (
             <div className="flex flex-row justify-between gap-10">
                 {previousPageUrl && (
-                    <a
-                        href={previousPageUrl}
-                        className={classnames(anchorClassNames, 'justify-self-start')}
-                    >
+                    <a href={previousPageUrl} className={classnames(anchorClassNames, 'left-0')}>
                         Previous Page
                     </a>
                 )}
                 {nextPage && (
                     <a
                         href={formatUrl({ path, params: { tag, country, page: nextPage } })}
-                        className={classnames(anchorClassNames, 'justify-self-end')}
+                        className={classnames(anchorClassNames, 'right-0')}
                     >
                         Next Page
                     </a>

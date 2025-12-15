@@ -7,21 +7,21 @@ RUN corepack enable pnpm
 ###
 
 # Stage 2-a: Install Production Dependencies
-FROM base AS production-dependencies
+FROM base AS prodDependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+RUN --mount=type=cache,target=/root/.local,sharing=locked pnpm install --prod --frozen-lockfile
 
 # Stage 2-b: Install All Dependencies
-FROM base AS dependencies
+FROM base AS devDependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.local,sharing=locked pnpm install --frozen-lockfile
 
 ###
 
 # Stage 3: Build App
 FROM base AS build
 COPY . .
-COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=devDependencies /app/node_modules ./node_modules
 RUN pnpm run build
 
 ###
@@ -35,10 +35,11 @@ ENV PORT=${PORT}
 EXPOSE ${PORT}
 EXPOSE 9220
 
-COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=devDependencies /app/node_modules ./node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-CMD ["pnpm", "start:dev"]
+ENTRYPOINT ["pnpm"]
+CMD ["start:dev"]
 
 ###
 
@@ -50,8 +51,9 @@ ARG PORT=8080
 ENV PORT=${PORT}
 EXPOSE ${PORT}
 
-COPY --from=production-dependencies /app/node_modules ./node_modules
+COPY --from=prodDependencies /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./package.json
 
-CMD ["pnpm", "start"]
+ENTRYPOINT ["pnpm"]
+CMD ["start"]
