@@ -1,29 +1,15 @@
-import dotenv from 'dotenv';
-import http1 from 'http';
+import http from 'http';
 
 import { makeApp } from './server';
+import { loadConfig } from './utils/loadConfig';
 
-const envFiles = [];
-if (process.env.ENV_FILE) {
-    envFiles.push(process.env.ENV_FILE);
-} else {
-    envFiles.push(`.env.${process.env.NODE_ENV.toLowerCase()}`);
-}
-const config = dotenv.config({ path: envFiles, quiet: true });
-if (config.error) {
-    throw config.error;
-} else if (!config.parsed) {
-    throw new Error('No configuration found');
-}
-
+const config = loadConfig();
 const port = Number.parseInt(process.env.PORT, 10) || 8080;
 
 const main = async () => {
     const app = await makeApp(config.parsed);
-
-    const http1Server = http1.createServer(app);
-
-    http1Server.listen(port, '0.0.0.0');
+    const httpServer = http.createServer(app);
+    httpServer.listen(port, '0.0.0.0');
 };
 
 main()

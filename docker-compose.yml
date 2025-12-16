@@ -1,9 +1,6 @@
 x-app: &app-config
   env_file:
     - .env.docker
-  ports:
-    - '8080:8080'
-    - '9220:9220'
   environment:
     ENV_FILE: .env.docker
     REDIS_HOST: redis
@@ -26,6 +23,9 @@ services:
       context: .
       target: development
     <<: *app-config
+    ports:
+      - '8080:8080'
+      - '9220:9220'
     volumes:
       # Mount the host directory to the container's working directory
       - .:/app
@@ -38,6 +38,8 @@ services:
       context: .
       target: production
     <<: *app-config
+    ports:
+      - '8080:8080'
     volumes:
       # Mount the host .env.docker to the container
       - ./.env.docker:/app/.env.docker

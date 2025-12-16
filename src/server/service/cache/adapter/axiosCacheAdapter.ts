@@ -1,10 +1,22 @@
 import { getAdapter } from 'axios';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 import { CacheService } from '../index';
 
 import type { AxiosAdapterConfig, AxiosAdapter, AxiosResponse } from 'axios';
 
 import type { CacheKeyParams } from '../cacheWrapper';
+
+export const redactParams = (
+    params: CacheKeyParams['requestParams']
+): CacheKeyParams['requestParams'] => {
+    const redactedParams = cloneDeep(params);
+    if (redactedParams.apikey) {
+        redactedParams.apikey = '***********';
+    }
+
+    return redactedParams;
+};
 
 export const makeCacheAdapter = (
     adapter?: AxiosAdapterConfig | AxiosAdapterConfig[]
@@ -20,6 +32,8 @@ export const makeCacheAdapter = (
         };
         const maybeCachedResponse = await cacheService.get(cacheKeyParams);
         if (maybeCachedResponse) {
+            console.log('Cache hit for', { ...cacheKeyParams, requestParams: redactParams(cacheKeyParams.requestParams) });
+
             return Promise.resolve({
                 data: maybeCachedResponse,
                 status: 200,

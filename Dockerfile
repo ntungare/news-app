@@ -3,6 +3,7 @@ FROM docker.io/library/node:24-alpine AS base
 WORKDIR /app
 RUN corepack install -g pnpm@10
 RUN corepack enable pnpm
+ENV COREPACK_ENABLE_NETWORK=0
 
 ###
 
