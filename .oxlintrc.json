@@ -10,6 +10,7 @@
         "browser": true,
         "node": true
     },
+    "jsPlugins": ["@tanstack/eslint-plugin-query"],
     "rules": {
         "@typescript-eslint/no-unused-vars": [
             "error",

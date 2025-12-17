@@ -32,7 +32,10 @@ export const makeCacheAdapter = (
         };
         const maybeCachedResponse = await cacheService.get(cacheKeyParams);
         if (maybeCachedResponse) {
-            console.log('Cache hit for', { ...cacheKeyParams, requestParams: redactParams(cacheKeyParams.requestParams) });
+            console.log('Cache hit for', {
+                ...cacheKeyParams,
+                requestParams: redactParams(cacheKeyParams.requestParams),
+            });
 
             return Promise.resolve({
                 data: maybeCachedResponse,
