@@ -3,12 +3,10 @@ import React, { createContext, useContext, FC, PropsWithChildren } from 'react';
 import type { Category } from '../constants/categories';
 
 export interface TagContextT {
-    activeTagId: Category;
+    activeTagId?: Category;
 }
 
-const defaultTagContext: TagContextT = {
-    activeTagId: 'technology',
-};
+const defaultTagContext: TagContextT = {};
 
 export const TagContext = createContext(defaultTagContext);
 

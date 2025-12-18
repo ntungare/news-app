@@ -10,7 +10,7 @@ export interface PaginationProps {
 }
 
 export const Pagination: FC<PaginationProps> = ({ previousPageUrl, nextPage }) => {
-    const { path, tag, country } = useUrlState();
+    const { path, country, tag, search } = useUrlState();
     const anchorClassNames = classnames(
         'px-4 py-2 rounded-full border text-sm font-medium transition-colors',
         'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -26,7 +26,7 @@ export const Pagination: FC<PaginationProps> = ({ previousPageUrl, nextPage }) =
                 )}
                 {nextPage && (
                     <a
-                        href={formatUrl({ path, params: { tag, country, page: nextPage } })}
+                        href={formatUrl({ path, params: { country, tag, search, page: nextPage } })}
                         className={classnames(anchorClassNames, 'right-0')}
                     >
                         Next Page

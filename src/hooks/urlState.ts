@@ -1,8 +1,7 @@
-import { useContext } from 'react';
-
-import { CountryContext } from '../context/country';
-import { TagContext } from '../context/tag';
-import { UrlContext } from '../context/url';
+import { useCountryContext } from '../context/country';
+import { useSearchContext } from '../context/search';
+import { useTagContext } from '../context/tag';
+import { useUrlContext } from '../context/url';
 
 import type { Category } from '../constants/categories';
 import type { Country } from '../constants/countries';
@@ -13,9 +12,10 @@ export interface UrlState {
 }
 
 export const useUrlState = () => {
-    const { activePath } = useContext(UrlContext);
-    const { activeCountry } = useContext(CountryContext);
-    const { activeTagId } = useContext(TagContext);
+    const { activePath } = useUrlContext();
+    const { activeCountry } = useCountryContext();
+    const { activeTagId } = useTagContext();
+    const { searchTerm } = useSearchContext();
 
-    return { path: activePath, tag: activeTagId, country: activeCountry };
+    return { path: activePath, country: activeCountry, tag: activeTagId, search: searchTerm };
 };

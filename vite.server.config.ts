@@ -15,6 +15,7 @@ export default defineConfig({
             input: {
                 'home/Home.server': './src/pages/home/Home.server.tsx',
                 'error/Error.server': './src/pages/error/Error.server.tsx',
+                'search/Search.server': './src/pages/search/Search.server.tsx',
             },
         },
     },

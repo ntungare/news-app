@@ -8,15 +8,30 @@ import type { Country } from '../../constants/countries';
 
 export interface NewsDataLatestParams {
     apikey: string;
+    id?: string | string[];
     q?: string;
     qInTitle?: string;
     qInMeta?: string;
-    country: Country;
+    timeframe?: string;
+    country?: Country | Country[];
+    excludecountry?: Country | Country[];
     category?: Category | Category[];
-    language: 'en';
+    excludecategory?: Category | Category[];
+    language?: string | string[];
+    excludelanguage?: string | string[];
+    sort?: 'pubdateasc' | 'relevancy' | 'source';
+    url?: string;
     domain?: string | string[];
-    sort: 'pubdateasc' | 'relevancy' | 'source';
+    domainurl?: string | string[];
+    excludedomain?: string | string[];
+    excludefield?: string | string[];
     prioritydomain?: 'top' | 'medium' | 'low';
+    timezone?: string;
+    full_content?: 0 | 1;
+    image?: 0 | 1;
+    video?: 0 | 1;
+    removeduplicate?: 1;
+    size?: number;
     page?: string;
 }
 
@@ -75,7 +90,8 @@ export interface GetLatestResponse {
 
 export interface PageKey {
     country: NonNullable<UserInputParams['country']>;
-    category: NonNullable<UserInputParams['category']>;
+    category?: NonNullable<UserInputParams['category']>;
+    q?: NonNullable<UserInputParams['q']>;
     nextPage?: NonNullable<NewsDataLatestResponse['nextPage']>;
 }
 
@@ -132,7 +148,8 @@ export class NewsDataService {
 
         const key = this.getPageKey({
             country: currentParams.country,
-            category: currentParams.category!,
+            category: currentParams.category,
+            q: currentParams.q,
             nextPage,
         });
 
@@ -175,7 +192,8 @@ export class NewsDataService {
             this.setCurrentPageParamsToNextPage(requestParams, response.data.nextPage);
             const previousPageParams = this.getPreviousPageParamsFromPage({
                 country: requestParams.country,
-                category: requestParams.category!,
+                category: requestParams.category,
+                q: requestParams.q,
                 nextPage: requestParams.page,
             });
 

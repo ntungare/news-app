@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import { NewsDataService } from './api/newsdata';
 import { makeErrorController } from './controllers/ErrorController';
 import { makeHomeController } from './controllers/HomeController';
+import { makeSearchController } from './controllers/SearchController';
 import { countryMiddlware } from './middleware/country';
 import { makeInjectLocalsMiddleware } from './middleware/injectLocals';
 import { navBarMiddlware } from './middleware/navBar';
@@ -39,6 +40,7 @@ export const makeApp = async (_env: DotenvParseOutput): Promise<Express> => {
     app.use(navBarMiddlware);
 
     app.get('/', makeHomeController());
+    app.get('/search', makeSearchController());
 
     app.use(makeErrorController());
 

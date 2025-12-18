@@ -43,7 +43,15 @@ export const previousPageUrl = (
         return undefined;
     }
 
-    const { country, category, page } = previousPageParams;
+    const { country: maybeManyCountries, category, page } = previousPageParams;
+
+    let country: Country;
+    if (Array.isArray(maybeManyCountries)) {
+        country = maybeManyCountries[0];
+    } else {
+        country = maybeManyCountries;
+    }
+
     let tag: Category;
     if (Array.isArray(category)) {
         tag = category[0];
