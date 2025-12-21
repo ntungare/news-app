@@ -6,6 +6,7 @@ import { getHtml, renderFile } from '../utils/render';
 import type { Country } from '../../constants/countries';
 import type { SearchRenderState } from '../../pages/search/Search.server';
 import type { Controller } from '../middleware/type';
+import { getTagsToDisplay } from '../utils/tags';
 
 export type Handler = Controller<{ search: string; page?: string }>;
 
@@ -78,6 +79,9 @@ export const makeSearchController = (): Handler =>
             activePath: currentHref,
             activeCountry: activeCountry,
             navBarProps: navBarProps,
+            categoryTagsProps: {
+                tags: getTagsToDisplay(),
+            },
             data: {
                 searchTerm,
                 articleProps: {

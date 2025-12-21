@@ -31,11 +31,9 @@ export const makeCacheAdapter = (
             requestParams: config.params,
         };
         const maybeCachedResponse = await cacheService.get(cacheKeyParams);
+        const requestParams = redactParams(cacheKeyParams.requestParams);
         if (maybeCachedResponse) {
-            console.log('Cache hit for', {
-                ...cacheKeyParams,
-                requestParams: redactParams(cacheKeyParams.requestParams),
-            });
+            console.log('Cache hit for', { ...cacheKeyParams, requestParams });
 
             return Promise.resolve({
                 data: maybeCachedResponse,
@@ -44,6 +42,8 @@ export const makeCacheAdapter = (
                 config,
             } as AxiosResponse<string>);
         }
+
+        console.log('Cache miss for', { ...cacheKeyParams, requestParams });
 
         const response = await originalAdapter(config);
         cacheService.set(cacheKeyParams, response.data);

@@ -11,5 +11,8 @@ export const config: UserConfig = {
         manifest: true,
         cssMinify: true,
     },
-    plugins: [tailwindcss(), react()],
+    plugins: [
+        tailwindcss(),
+        react(),
+    ],
 };

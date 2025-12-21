@@ -125,13 +125,6 @@ export class NewsDataService {
     private addExtraConfigsToInstance(instance: AxiosInstance) {
         // Wrap the adapter with caching functionality
         instance.defaults.adapter = makeCacheAdapter(instance.defaults.adapter);
-
-        // Add a request interceptor for logging
-        instance.interceptors.request.use((config) => {
-            console.log(`Axios Request URL: ${config.baseURL}${config.url}`);
-
-            return config;
-        });
     }
 
     private getPageKey(pageKey: PageKey): string {

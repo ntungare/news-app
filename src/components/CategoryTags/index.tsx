@@ -1,5 +1,5 @@
-import classnames from 'classnames';
 import React, { FC } from 'react';
+import classnames from 'classnames';
 
 import { useUrlState } from '../../hooks/urlState';
 import { formatUrl } from '../../utils/urlFormatter';
@@ -7,7 +7,7 @@ import { formatUrl } from '../../utils/urlFormatter';
 import type { Category, TagData } from '../../constants/categories';
 
 export interface CategoryTagsProps {
-    activeTagId: Category;
+    activeTagId?: Category;
     tags: Array<TagData>;
 }
 
@@ -16,7 +16,7 @@ export const CategoryTags: FC<CategoryTagsProps> = ({ activeTagId, tags }) => {
 
     return (
         <div className="[grid-area:tags] bg-white shadow-sm mb-2">
-            <div className="mx-4 py-3 flex gap-3 overflow-x-auto snap-x scroll-px-2">
+            <div className="mx-4 pt-3 pb-4 flex gap-3 overflow-x-auto snap-x scroll-px-2">
                 {tags.map((tag, idx) => {
                     const isActive = tag.id === activeTagId;
 

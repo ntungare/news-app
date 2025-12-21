@@ -15,7 +15,6 @@ import type { Country } from '../../constants/countries';
 
 export interface NavBarProps {
     title: string;
-    navItems: Array<{ id: string; name: string; href: string }>;
     queryParams?: Record<string, any>;
 }
 
