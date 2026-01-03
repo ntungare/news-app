@@ -3,12 +3,12 @@ import { formatUrl } from '../../utils/urlFormatter';
 import { AppError } from '../errors/error';
 import { Page } from '../utils/fileMappings';
 import { getHtml, renderFile } from '../utils/render';
+import { getTagsToDisplay } from '../utils/tags';
 
 import type { Country } from '../../constants/countries';
 import type { HomeRenderState } from '../../pages/home/Home.server';
 import type { UserInputParams } from '../api/newsdata';
 import type { Controller } from '../middleware/type';
-import { getTagsToDisplay } from '../utils/tags';
 
 export type Handler = Controller<{
     tag?: Category;

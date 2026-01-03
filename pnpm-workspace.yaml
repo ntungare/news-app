@@ -1,3 +1,2 @@
-ignoredBuiltDependencies:
-    - esbuild
-    - utf-8-validate
+onlyBuiltDependencies:
+  - esbuild

@@ -140,9 +140,10 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
-# VS Code
+# IDEs
 .vscode/
 .zed/
+.idea/
 
 # MacOS
 .DS_Store

@@ -9,6 +9,7 @@ echo "Found: $(jq -r '.devDependencies | keys | join(" ")' package.json)"
 
 echo "Running update"
 pnpm i -D $(jq -r '.devDependencies | keys | join("@latest ")' package.json)
+pnpm i -D @types/node@24
 
 echo "Updating dependencies"
 echo "Found: $(jq -r '.dependencies | keys | join(" ")' package.json)"

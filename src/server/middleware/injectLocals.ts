@@ -1,14 +1,12 @@
 import { AppLocals, Middleware } from './type';
 
-export const makeInjectLocalsMiddleware =
-    (locals: Partial<AppLocals>): Middleware =>
-    (_request, response, next) => {
-        const { manifest, clientAssetPath, serverAssetPath, queryClient, newsDataService } = locals;
-
-        response.locals.manifest = manifest;
-        response.locals.clientAssetPath = clientAssetPath;
-        response.locals.serverAssetPath = serverAssetPath;
-        response.locals.queryClient = queryClient;
-        response.locals.newsDataService = newsDataService;
+export const makeInjectLocalsMiddleware = (locals: Partial<AppLocals>): Middleware =>
+    function injectLocalsMiddleware(_request, response, next) {
+        Object.entries(locals).forEach(([key, value]) => {
+            Object.defineProperty(response.locals, key, {
+                value,
+                writable: false,
+            });
+        });
         next();
     };

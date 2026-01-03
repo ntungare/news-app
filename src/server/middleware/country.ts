@@ -13,7 +13,7 @@ export interface CountryState {
     activeCountry: Country;
 }
 
-export const countryMiddlware: Middleware = (request, response, next) => {
+export const countryMiddleware: Middleware = (request, response, next) => {
     if (!!request.query.country && !inputIsCountry(request.query.country)) {
         throw new AppError(400, 'Invalid country');
     }

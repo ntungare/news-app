@@ -5,7 +5,7 @@ export interface NavBarState {
     navBarProps: NavBarProps;
 }
 
-export const navBarMiddlware: Middleware = (_request, response, next) => {
+export const navBarMiddleware: Middleware = (_request, response, next) => {
     response.locals.navBarProps = {
         title: 'DailyNews',
     };

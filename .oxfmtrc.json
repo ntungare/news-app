@@ -14,7 +14,7 @@
             ["type-import"],
             ["type-internal"],
             ["type-parent", "type-sibling", "type-index"],
-            ["unknown"],
-        ],
-    },
+            ["unknown"]
+        ]
+    }
 }

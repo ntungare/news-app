@@ -17,15 +17,21 @@ export const makeRedisCache = async (): Promise<RedisClient | undefined> => {
     }
 
     if (redisCache) {
-        await redisCache
-            .on('error', (thrown) => {
-                if (thrown instanceof Error) {
-                    throw new Error('Redis Client Error', { cause: thrown.cause });
-                }
+        try {
+            await redisCache
+                .on('error', (thrown) => {
+                    if (thrown instanceof Error) {
+                        throw new Error('Redis Client Error', { cause: thrown });
+                    }
 
-                throw new Error('Redis Client Error');
-            })
-            .connect();
+                    throw new Error('Redis Client Error');
+                })
+                .connect();
+        } catch (error) {
+            console.error('Error occurred when trying to connect', error);
+
+            redisCache = undefined;
+        }
     }
 
     return redisCache;

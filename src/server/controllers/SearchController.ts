@@ -2,11 +2,11 @@ import { formatUrl } from '../../utils/urlFormatter';
 import { UserInputParams } from '../api/newsdata';
 import { Page } from '../utils/fileMappings';
 import { getHtml, renderFile } from '../utils/render';
+import { getTagsToDisplay } from '../utils/tags';
 
 import type { Country } from '../../constants/countries';
 import type { SearchRenderState } from '../../pages/search/Search.server';
 import type { Controller } from '../middleware/type';
-import { getTagsToDisplay } from '../utils/tags';
 
 export type Handler = Controller<{ search: string; page?: string }>;
 
