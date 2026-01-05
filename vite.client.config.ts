@@ -13,6 +13,7 @@ export default defineConfig({
         sourcemap: true,
         rollupOptions: {
             input: {
+                common: './src/pages/common.ts',
                 'home/Home.client': './src/pages/home/Home.client.tsx',
                 'error/Error.client': './src/pages/error/Error.client.tsx',
                 'search/Search.client': './src/pages/search/Search.client.tsx',

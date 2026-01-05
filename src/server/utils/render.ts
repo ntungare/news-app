@@ -80,6 +80,7 @@ export const getHtml = <T>(
     const { page, manifest } = clientAsset;
 
     const clientFileName = pageToClientFileName[page];
+    const commonFileData = manifest['src/pages/common.ts'];
     const cssFiles = collectCssFiles(clientFileName, manifest);
     const clientFileData = manifest[clientFileName];
 
@@ -91,6 +92,7 @@ export const getHtml = <T>(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DailyNews</title>
     <link rel="icon" type="image/svg" sizes="any" href="/assets/images/favicon.svg" fetchpriority="high" />
+    <script src="/assets/${commonFileData.file}" type="module"></script>
     ${cssFiles
         .map(
             (cssPath) =>

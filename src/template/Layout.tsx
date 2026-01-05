@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import React, { FC, PropsWithChildren, useMemo } from 'react';
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals/attribution';
 
 import { CategoryTags, CategoryTagsProps } from '../components/CategoryTags';
 import { Footer } from '../components/Footer';
