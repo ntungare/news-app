@@ -1,4 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
+import bodyParser from 'body-parser';
 import compression from 'compression';
 import express, { Express } from 'express';
 import morgan from 'morgan';
@@ -6,6 +7,7 @@ import morgan from 'morgan';
 import { NewsDataService } from './api/newsdata';
 import { makeErrorController } from './controllers/ErrorController';
 import { makeHomeController } from './controllers/HomeController';
+import { makeMetricsController } from './controllers/MetricsController';
 import { makeSearchController } from './controllers/SearchController';
 import { countryMiddleware } from './middleware/country';
 import { makeInjectLocalsMiddleware } from './middleware/injectLocals';
@@ -27,6 +29,9 @@ export const makeApp = async (env: DotenvParseOutput): Promise<Express> => {
     app.use(morgan('tiny'));
     app.use(compression());
     app.use('/assets', express.static(clientAssetPath, { maxAge: '1d' }));
+
+    app.post('/metrics', bodyParser.text(), makeMetricsController());
+
     app.use(
         makeInjectLocalsMiddleware({
             manifest,
@@ -38,7 +43,6 @@ export const makeApp = async (env: DotenvParseOutput): Promise<Express> => {
     );
     app.use(countryMiddleware);
     app.use(navBarMiddleware);
-
     app.get('/', makeHomeController());
     app.get('/search', makeSearchController());
 
