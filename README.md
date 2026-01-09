@@ -12,13 +12,14 @@ A Server-Side Rendered React application that displays real-time news from [news
 - **Responsive Design**: Tailwind CSS with CSS Grid layouts
 - **Error Handling**: Custom error pages with graceful fallbacks
 - **Podman Support**: Containerized deployment with optional Redis service
+- **Performance Monitoring**: Uses `web-vitals` for tracking performance metrics
 
 ## Tech Stack
 
-**Frontend**: React 19, TailwindCSS 4, TanStack Query  
-**Backend**: Express, TypeScript  
-**Build**: Vite (dual client/server configs)  
-**Cache**: Redis (optional) + LRU fallback  
+**Frontend**: React 19, TailwindCSS 4, TanStack Query
+**Backend**: Express, TypeScript
+**Build**: Vite (dual client/server configs)
+**Cache**: Redis (optional) + LRU fallback
 **Tools**: Oxlint, Oxfmt
 
 ## Getting Started
@@ -37,6 +38,14 @@ pnpm install
 
 ### Configuration
 
+**Environment Variables**
+
+| Variable              | Required | Default     | Description                   |
+| --------------------- | -------- | ----------- | ----------------------------- |
+| `NEWSDATA_IO_API_KEY` | Yes      | -           | API key for newsdata.io       |
+| `REDIS_HOST`          | No       | `localhost` | Redis hostname                |
+| `REDIS_PORT`          | No       | `6379`      | Redis port                    |
+
 Create a `.env` file:
 
 ```dotenv
@@ -46,7 +55,9 @@ REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
 
-### Development
+## Development & Deployment
+
+### Local Development
 
 ```bash
 pnpm start:dev
@@ -99,7 +110,7 @@ src/
 └── constants/       # Categories, countries
 ```
 
-## Key Features
+## Detailed Features
 
 ### Caching Strategy
 
@@ -121,7 +132,7 @@ Three-layer approach for optimal performance:
 - **Categories**: Breaking, Business, Crime, Domestic, Education, Entertainment, Environment, Food, Health, Lifestyle, Politics, Science, Sports, Technology, Tourism, World, Other
 - Middleware validates and normalizes query parameters
 
-## Scripts
+## Available Scripts
 
 ```bash
 pnpm clean         # Remove dist/
