@@ -5,12 +5,15 @@ import { config } from './vite.common.config';
 
 const outDir = path.join(config.build?.outDir ?? '', 'client');
 
+const isProduction = (process.env.NODE_ENV ?? 'development') === 'production';
+const sourcemap = !isProduction;
+
 export default defineConfig({
     ...config,
     build: {
         ...config.build,
         outDir,
-        sourcemap: true,
+        sourcemap,
         rollupOptions: {
             input: {
                 common: './src/pages/common.ts',

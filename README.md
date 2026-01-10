@@ -13,6 +13,7 @@ A Server-Side Rendered React application that displays real-time news from [news
 - **Error Handling**: Custom error pages with graceful fallbacks
 - **Podman Support**: Containerized deployment with optional Redis service
 - **Performance Monitoring**: Uses `web-vitals` for tracking performance metrics
+- **Search**: Full-text search across articles with pagination and preserved URL state
 
 ## Tech Stack
 
@@ -45,6 +46,7 @@ pnpm install
 | `NEWSDATA_IO_API_KEY` | Yes      | -           | API key for newsdata.io       |
 | `REDIS_HOST`          | No       | `localhost` | Redis hostname                |
 | `REDIS_PORT`          | No       | `6379`      | Redis port                    |
+| `LOCAL_REDIS`         | No       | -           | Fallback to local Redis if `REDIS_HOST`/`REDIS_PORT` are not set (e.g., `redis://localhost:6379`) |
 
 Create a `.env` file:
 
@@ -53,6 +55,7 @@ NEWSDATA_IO_API_KEY=your_api_key_here
 # Optional Redis
 REDIS_HOST=localhost
 REDIS_PORT=6379
+LOCAL_REDIS=true
 ```
 
 ## Development & Deployment
@@ -67,7 +70,7 @@ Runs the server with hot reload at `http://localhost:8080`.
 
 #### Podman
 
-**Option 1: Redis in container, app on host (recommended for development)**
+**Option 1: Redis in container, App on host (recommended for development)**
 
 ```bash
 # Start Redis container
@@ -77,14 +80,24 @@ podman compose up redis
 pnpm run start:dev
 ```
 
-**Option 2: Both Redis and app in containers**
+**Option 2: Both Redis and App in containers**
 
 ```bash
 # Start both Redis and app
-podman compose up app
+podman compose up app-dev
 ```
 
 > **Note**: Live refresh (bundle rebuilds on file changes) does not work when running the app in a container. You may need to restart the app to see changes.
+
+
+**Option 3: Both Redis and App in containers**
+
+```bash
+# Start both Redis and app
+podman compose up app-prod
+```
+
+> **Note**: This uses a production build of the app so the sources are minified.
 
 ### Production
 
@@ -120,6 +133,8 @@ Three-layer approach for optimal performance:
 2. **Redis** - Distributed cache (when configured)
 3. **LRU cache** - In-memory fallback
 
+> **TTL**: Cached responses expire after 12 hours.
+
 ### Pagination
 
 - Server tracks pagination tokens in a Map
@@ -152,6 +167,9 @@ pnpm check         # TypeScript type checking
 | `REDIS_HOST`          | No       | `localhost` | Redis hostname                |
 | `REDIS_PORT`          | No       | `6379`      | Redis port                    |
 | `NODE_ENV`            | No       | -           | `production` or `development` |
+
+## Deployment Notes
+- Set `NODE_ENV=production` for optimized builds.
 
 ---
 

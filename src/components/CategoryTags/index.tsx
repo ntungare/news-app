@@ -12,7 +12,7 @@ export interface CategoryTagsProps {
 }
 
 export const CategoryTags: FC<CategoryTagsProps> = ({ activeTagId, tags }) => {
-    const { path, country } = useUrlState();
+    const { country } = useUrlState();
 
     return (
         <div className="[grid-area:tags] bg-white shadow-sm mb-2">
@@ -23,7 +23,7 @@ export const CategoryTags: FC<CategoryTagsProps> = ({ activeTagId, tags }) => {
                     return (
                         <a
                             key={`${idx}-${tag.id}`}
-                            href={formatUrl({ path, params: { country, tag: tag.id } })}
+                            href={formatUrl({ path: '/', params: { country, tag: tag.id } })}
                             className={classnames('px-4 py-2 mx-1 rounded-full snap-start', {
                                 'bg-blue-600 text-white': isActive,
                                 'bg-gray-200 hover:bg-gray-300': !isActive,

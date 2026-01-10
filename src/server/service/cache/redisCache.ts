@@ -8,7 +8,7 @@ export const makeRedisCache = async (): Promise<RedisClient | undefined> => {
         redisCache = createClient({
             url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
         });
-    } else if (process.env.HOST_REDIS) {
+    } else if (process.env.LOCAL_REDIS) {
         redisCache = createClient({
             url: 'redis://localhost:6379',
         });
