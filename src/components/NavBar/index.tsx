@@ -19,9 +19,9 @@ export interface NavBarProps {
 }
 
 const CountryFlags: Record<Country, FlagComponent> = {
-    us: memo(() => <US className="w-full h-full block shadow-sm" />),
-    ie: memo(() => <IE className="w-full h-full block shadow-sm" />),
-    in: memo(() => <IN className="w-full h-full block shadow-sm" />),
+    us: memo(() => <US className="w-full h-full block shadow-sm" />) as FlagComponent,
+    ie: memo(() => <IE className="w-full h-full block shadow-sm" />) as FlagComponent,
+    in: memo(() => <IN className="w-full h-full block shadow-sm" />) as FlagComponent,
 } as const;
 
 export const NavBar: FC<NavBarProps> = ({ title }) => {
