@@ -5,7 +5,7 @@ export const loadConfig = (): dotenv.DotenvConfigOutput => {
     if (process.env.ENV_FILE) {
         envFiles.push(process.env.ENV_FILE);
     } else {
-        envFiles.push(`.env.${process.env.NODE_ENV.toLowerCase()}`);
+        envFiles.push(`.env.${(process.env.NODE_ENV ?? 'development').toLowerCase()}`);
     }
     const config = dotenv.config({ path: envFiles, quiet: true });
     if (config.error) {

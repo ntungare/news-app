@@ -41,11 +41,11 @@ pnpm install
 
 **Environment Variables**
 
-| Variable              | Required | Default     | Description                   |
-| --------------------- | -------- | ----------- | ----------------------------- |
-| `NEWSDATA_IO_API_KEY` | Yes      | -           | API key for newsdata.io       |
-| `REDIS_HOST`          | No       | `localhost` | Redis hostname                |
-| `REDIS_PORT`          | No       | `6379`      | Redis port                    |
+| Variable              | Required | Default     | Description                                                                                       |
+| --------------------- | -------- | ----------- | ------------------------------------------------------------------------------------------------- |
+| `NEWSDATA_IO_API_KEY` | Yes      | -           | API key for newsdata.io                                                                           |
+| `REDIS_HOST`          | No       | `localhost` | Redis hostname                                                                                    |
+| `REDIS_PORT`          | No       | `6379`      | Redis port                                                                                        |
 | `LOCAL_REDIS`         | No       | -           | Fallback to local Redis if `REDIS_HOST`/`REDIS_PORT` are not set (e.g., `redis://localhost:6379`) |
 
 Create a `.env` file:
@@ -88,7 +88,6 @@ podman compose up app-dev
 ```
 
 > **Note**: Live refresh (bundle rebuilds on file changes) does not work when running the app in a container. You may need to restart the app to see changes.
-
 
 **Option 3: Both Redis and App in containers**
 
@@ -169,6 +168,7 @@ pnpm check         # TypeScript type checking
 | `NODE_ENV`            | No       | -           | `production` or `development` |
 
 ## Deployment Notes
+
 - Set `NODE_ENV=production` for optimized builds.
 
 ---

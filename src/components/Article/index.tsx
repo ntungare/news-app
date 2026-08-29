@@ -11,7 +11,7 @@ export const Article: FC<NewsDataArticle> = ({
     description,
     source_icon,
     source_name,
-    category = [],
+    category,
     link,
 }) => {
     const { path, country } = useUrlState();
